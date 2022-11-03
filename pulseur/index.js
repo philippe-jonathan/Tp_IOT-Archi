@@ -1,21 +1,24 @@
 'use strict';
 
-// Require
+// NOTE - Require
 const redis = require('redis');
 
-const client = redis.createClient(
-  {
+// NOTE - REDIS
+const client = redis.createClient({
     url: 'redis://redis-server',
     port: 6379
-  }
-);
+  });
 
-async function connection() {
-  await client.connect().catch(console.error);
-  await client.set('visits', 0);
+async function redis_connection() {
+    client.connect(function(err) {
+        if(err) throw err;
+        console.log("Redis database connected!")
+    })
 }
+// --------------------
 
-connection();
+// NOTE - Redis connection
+redis_connection();
 
 function getRandomTemp(min, max) {
   return Math.random() * (max - min) + min;
