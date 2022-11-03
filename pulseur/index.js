@@ -1,17 +1,7 @@
 'use strict';
 
 // Require
-const express = require('express');
 const redis = require('redis');
-
-// Constants
-const PORT = 7071;
-const app = express();
-
-async function connection() {
-  await client.connect().catch(console.error);
-  await client.set('visits', 0);
-}
 
 const client = redis.createClient(
   {
@@ -20,20 +10,24 @@ const client = redis.createClient(
   }
 );
 
+async function connection() {
+  await client.connect().catch(console.error);
+  await client.set('visits', 0);
+}
+
 connection();
+
+function getRandomTemp(min, max) {
+  return Math.random() * (max - min) + min;
+}
     
-//defining the root endpoint
-app.post('/pulsors', async (req, res) => {
-  let visits = await client.get('visits');
-  await client.set('visits', parseInt(visits) + 1);
-  res.send('New user added');
-})
-
-app.get('/', async (req, res) => {
-  let visits = await client.get('visits');
-  res.send('Number of visits: ' + parseInt(visits));
-})
-
-app.listen(PORT, () => {
-  console.log('Running on port: ' . PORT);
-});
+setInterval(async () => {
+  let random = Math.round(getRandomTemp(-10, 40));
+  let data = {
+    'temp': random+'°c',
+    'sensor_id' : Math.round(getRandomTemp(10000, 100000))
+  };
+  await client.set('value', JSON.stringify(data));
+  // res.send("New value added");
+  console.log("New value added");
+}, 1000);
