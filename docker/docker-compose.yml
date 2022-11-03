@@ -5,17 +5,26 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
+    volumes:
+      - local-db:/bitnami/redis/data
+  
   node-app:
-    build: .
+    build: 
+      context: ./..
+      dockerfile: docker/dockerfile-pulsor
     ports:
       - "7071:7071"
+    volumes:
+      - nodeapp:/usr/app/
+      - nodeapp:/usr/app/node_modules
+  
   db_cloud:
     tty: true
     image: mysql:5.7
     container_name: dbcloud
     build: 
-      context: .
-      dockerfile: dockerfile-db
+      context: ./..
+      dockerfile: docker/dockerfile-db
     healthcheck:
         test: ["CMD", "mysqladmin" ,"ping", "-h", "db_cloud"]
         interval: 2s
@@ -30,3 +39,31 @@ services:
       MYSQL_PASSWORD: 'password'
       # Password for root access
       MYSQL_ROOT_PASSWORD: 'password'
+    volumes:
+      - cloud-db:/var/lib/mysql
+  
+  syncapi:
+    tty: true
+    image: bitnami/laravel
+    container_name: syncapp
+    build: 
+      context: ./..
+      dockerfile: docker/dockerfile-laravel
+    working_dir: /var/www/
+    ports:
+      - "80:80"
+    extra_hosts:
+        host.docker.internal: host-gateway
+    environment:
+      MYSQL_HOST: 'dbcloud'
+      MYSQL_DATABASE: 'AirLuxDB'
+    volumes:
+      - syncapp:/var/www
+      
+# Names our volume
+volumes:
+  cloud-db:
+  local-db:
+  syncapp:
+  nodeapp:
+      

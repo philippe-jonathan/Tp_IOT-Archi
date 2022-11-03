@@ -18,7 +18,7 @@ class CaptorController extends Controller
     public function index()
     {
         $captor = Captor::get();
-        return $captor->json();
+        return $captor;
     }
 
     /**
@@ -36,7 +36,9 @@ class CaptorController extends Controller
             $captor->$key = $value;
         }
         
-        return $captor->json();
+        $captor->uid = uniqid('', true);
+        $captor->save();
+        return $captor;
     }
 
     /**
@@ -47,7 +49,7 @@ class CaptorController extends Controller
      */
     public function show(Captor $captor)
     {
-        return $captor->json();
+        return $captor;
     }
     
     /**
@@ -65,7 +67,7 @@ class CaptorController extends Controller
             $captor->$key = $value;
         }
         $captor->save();
-        return $captor->json();
+        return $captor;
 
     }
 

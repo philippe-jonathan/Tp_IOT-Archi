@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Route;
  });
 
 Route::apiResource('/captor', 'CaptorController');
+
 Route::get('/', function(){
      return "home";
 });
