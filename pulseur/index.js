@@ -22,12 +22,12 @@ function getRandomTemp(min, max) {
 }
     
 setInterval(async () => {
-  let random = Math.round(getRandomTemp(-10, 40));
+  let random = Math.round(getRandomTemp(-10, 40))+"°C";
   let data = {
-    'temp': random+'°c',
+    'temp': random,
     'sensor_id' : Math.round(getRandomTemp(10000, 100000))
   };
   await client.set('value', JSON.stringify(data));
   // res.send("New value added");
-  console.log("New value added");
+  console.log("New value added: "+ random);
 }, 1000);
