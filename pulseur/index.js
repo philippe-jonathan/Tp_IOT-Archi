@@ -24,6 +24,10 @@ function getRandomTemp(min, max) {
   return Math.random() * (max - min) + min;
 }
 
+function getTimestamp() {
+  return Date.now().toString();
+}
+
 setInterval(async () => {
   // Init used data
   let random = Math.round(getRandomTemp(-10, 40))+"°C";
@@ -39,7 +43,7 @@ setInterval(async () => {
   let json = JSON.parse(data_send);
   if(json.sensor_id && json.temp) {
     console.log("value type is OK");
-    await client.set('value', data_send);
+    await client.set(getTimestamp(), data_send);
     console.log("New value added: "+ random);
   } else {
     console.log("ERROR value type in database");
