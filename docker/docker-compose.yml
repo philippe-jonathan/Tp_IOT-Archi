@@ -3,10 +3,11 @@ services:
   redis-server: 
     image: 'redis'
     container_name: redis
-    ports:
-      - "6379:6379"
     volumes:
       - local-db:/bitnami/redis/data
+    build: 
+      context: ./..
+      dockerfile: docker/dockerfile-redis
   
   node-app:
     build: 
@@ -24,7 +25,7 @@ services:
     container_name: dbcloud
     build: 
       context: ./..
-      dockerfile: docker/dockerfile-db
+      dockerfile: docker/dockerfile-mysql
     healthcheck:
         test: ["CMD", "mysqladmin" ,"ping", "-h", "db_cloud"]
         interval: 2s
