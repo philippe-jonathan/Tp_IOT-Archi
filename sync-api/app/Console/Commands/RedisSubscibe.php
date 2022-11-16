@@ -12,7 +12,7 @@ class RedisSubscibe extends Command
      *
      * @var string
      */
-    protected $signature = 'redis:suscribe';
+    protected $signature = 'redis:subscribe';
 
     /**
      * The console command description.
@@ -38,8 +38,30 @@ class RedisSubscibe extends Command
      */
     public function handle()
     {
-        Redis::subscribe(['__key*__:*'], function($message){
-            echo $message;
-        });
+        // Redis::psubscribe(['__key*__:*'], function($message){
+        //     echo $message;
+        // });
+        $client = new Predis\Client([
+            'scheme' => 'tcp',
+            'host' => 'redis',
+            'port' => 6379,
+            'database' => 0,
+            'read_write_timeout' => 0
+        ]);
+        
+        $adapter = new \Superbalist\PubSub\Redis\RedisPubSubAdapter($client);
+        
+        // consume messages
+        // note: this is a blocking call
+        // $adapter->subscribe('my_channel', function ($message) {
+        //     var_dump($message);
+        // });
+        
+        try{
+            $adapter->connect('redis', 6379);
+            echo "ok";
+        }catch{
+            echo "not ok";
+        }
     }
 }

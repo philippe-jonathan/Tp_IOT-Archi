@@ -120,14 +120,11 @@ return [
     'redis' => [
 
         'client' => env('REDIS_CLIENT', 'phpredis'),
-        
-        'options' => [
-            'serializer' => Redis::SERIALIZER_MSGPACK,
-            'compression' => Redis::COMPRESSION_LZ4,
-        ],
 
         'options' => [
             'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'Laravel'), '_').'_database_'),
+            //'serializer' => Redis::SERIALIZER_MSGPACK,
+            //'compression' => Redis::COMPRESSION_LZ4,
         ],
 
         'default' => [
@@ -137,7 +134,7 @@ return [
             'database' => env('REDIS_DB', '0'),
             'read_timeout' => 60,
             'context' => [
-                // 'auth' => ['username', 'secret'],
+                 'auth' => ['default', 'nopass'],
                 // 'stream' => ['verify_peer' => false],
             ],
         ],
