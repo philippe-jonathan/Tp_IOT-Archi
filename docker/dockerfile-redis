@@ -19,4 +19,4 @@ RUN chmod u+x set_up_redis.sh \
 
 RUN ["/bin/bash", "/home/set_up_redis.sh"]
 
-ENTRYPOINT ["/bin/bash", "/home/start_pubsub.sh"]
+CMD ["/bin/bash", "/home/start_pubsub.sh"]
