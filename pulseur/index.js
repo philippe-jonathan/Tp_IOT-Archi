@@ -5,7 +5,7 @@ const redis = require('redis');
 
 // NOTE - REDIS
 const client = redis.createClient({
-  url: 'redis://redis-server',
+  url: 'redis://redis',
   port: 6379
 });
 
