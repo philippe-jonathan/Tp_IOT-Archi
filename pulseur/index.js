@@ -78,7 +78,6 @@ setInterval(async () => {
 
 }, 1000);
 
-
 // var mosca = require('mosca');
 // var settings = {port: 1883};
 // var broker = new mosca.Server(settings);
