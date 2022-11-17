@@ -21,23 +21,12 @@ async function redis_connection() {
 redis_connection();
 
 // NOTE - BROKER (Mosquirtto)
-var ascoltatori = require('ascoltatori');
 var settings = {
   type: 'mqtt',
   json: false,
   mqtt: require('mqtt'),
   url: 'mqtt://localhost:8883'
 };
-
-ascoltatori.build(settings, function (err, ascoltatore) {
-  
-  // NOTE - Subscribes to a "datas" topic
-  ascoltatore.subscribe('datas', function() {
-   console.log(arguments);
-   // { '0': 'datas', '1': 'Datas send to local database (redis)' }
- });
-
-});
 
 function getRandomTemp(min, max) {
   return Math.random() * (max - min) + min;
@@ -64,12 +53,6 @@ setInterval(async () => {
     console.log("value type is OK");
     await client.set(getTimestamp(), data_send);
     // NOTE - PUBLISHER
-    ascoltatori.build(settings, function (err, ascoltatore) { 
-      // NOTE - Publishes a message to the topic 'datas'
-      ascoltatore.publish('datas', 'Datas send to local database (redis)', function() {
-        console.log('Publish work!');
-      });
-    });
     // -------------------
     console.log("New value added: "+ random);
   } else {

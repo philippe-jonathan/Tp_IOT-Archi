@@ -5,6 +5,7 @@ FROM node:18
 # where available (npm@5+)
 COPY /pulseur/package*.json ./
 
+RUN apt-get update -qq && apt-get install -y gcc make build-essential
 RUN mkdir -p /home/pulseur
 WORKDIR /home/pulseur/
 
