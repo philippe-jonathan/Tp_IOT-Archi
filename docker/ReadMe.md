@@ -12,10 +12,10 @@
 
 # Containers
 - redis
-- syncapp
+- syncapi
 - dbcloud
-- node-app-1
+- pulsor
 
 ## Lancer le projet
-- Depuis un terminal allerdans le dossier "docker" et lancer la commande "docker build"
+- Depuis un terminal aller dans le dossier "docker" et lancer la commande "docker build"
 - Dans le même terminal lancer la commande "docker compose up"
