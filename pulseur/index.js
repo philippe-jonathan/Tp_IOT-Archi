@@ -40,8 +40,10 @@ setInterval(async () => {
   // Init used data
   let random = Math.round(getRandomTemp(-10, 40))+"°C";
   let data = {
-    'temp': random,
-    'sensor_id' : Math.round(getRandomTemp(10000, 100000))
+    'value': Math.round(getRandomTemp(-10, 40)),
+    'client_id' : (Math.random() + 1).toString(36).substring(2),
+    'name' : (Math.random() + 1).toString(36).substring(7),
+    'id' : (Math.random() + 1).toString(36).substring(2)
   };
 
   // Send to redis DB
@@ -49,7 +51,7 @@ setInterval(async () => {
   
   // Filter data in redis DB
   let json = JSON.parse(data_send);
-  if(json.sensor_id && json.temp) {
+  if(json.value && json.client_id && json.name && json.id) {
     console.log("value type is OK");
     await client.set(getTimestamp(), data_send);
     // NOTE - PUBLISHER

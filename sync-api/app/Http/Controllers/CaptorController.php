@@ -36,7 +36,7 @@ class CaptorController extends Controller
             $captor->$key = $value;
         }
         
-        $captor->uid = uniqid('', true);
+        //$captor->uid = uniqid('', true);
         $captor->save();
         return $captor;
     }
@@ -61,7 +61,7 @@ class CaptorController extends Controller
      */
     public function update(Request $request, Captor $captor)
     {
-        $inputs = $request->except('_token', '_method');
+        $inputs = $request->except('_token', '_method', 'uid');
         foreach($inputs as $key => $value)
         {
             $captor->$key = $value;
