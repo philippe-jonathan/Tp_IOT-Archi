@@ -15,12 +15,12 @@ export COMPOSER_HOME="$HOME/.config/composer";
 cd /var/www/
 composer install
 composer require predis/predis
-git clone https://github.com/phpredis/phpredis.git
-cd phpredis
-phpize
-./configure
+#docker system prune -agit clone https://github.com/phpredis/phpredis.git
+###cd phpredis
+#phpize
+#./configure
 make && make install
-cd ..
+#cd ..
 
 php artisan optimize
 composer dump-autoload

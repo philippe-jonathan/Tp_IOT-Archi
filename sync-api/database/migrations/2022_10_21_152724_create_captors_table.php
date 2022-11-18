@@ -17,8 +17,7 @@ class CreateCaptorsTable extends Migration
             $table->uuid('id');
             $table->string('client_id');
             $table->string('name');
-            $table->int('value_int');
-            $table->bool('value_bool');
+            $table->string('value');
             $table->timestamps();
         });
     }

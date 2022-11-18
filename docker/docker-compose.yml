@@ -8,13 +8,33 @@ services:
     build: 
       context: ./..
       dockerfile: docker/dockerfile-redis
+    healthcheck:
+        test: ["CMD", "redis-cli","ping"]
+        interval: 2s
+        timeout: 2s
+        retries: 10
+      
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: mosquitto
+    volumes:
+      - ../mosquitto/config/:/mosquitto/config/:ro
+      - ../mosquitto/log/:/mosquitto/log/
+      - mosquitto:/mosquitto/data/
+    ports:
+      - 1883:1883
+      - 9001:9001
   
   node-app:
     build: 
       context: ./..
       dockerfile: docker/dockerfile-pulsor
+    container_name: pulsor
     ports:
       - "7071:7071"
+    depends_on:
+      redis:
+        condition: service_healthy
     volumes:
       - nodeapp:/usr/app/
       - nodeapp:/usr/app/node_modules
@@ -27,7 +47,7 @@ services:
       context: ./..
       dockerfile: docker/dockerfile-mysql
     healthcheck:
-        test: ["CMD", "mysqladmin" ,"ping", "-h", "db_cloud"]
+        test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
         interval: 2s
         timeout: 2s
         retries: 10
@@ -46,7 +66,7 @@ services:
   syncapi:
     tty: true
     image: bitnami/laravel
-    container_name: syncapp
+    container_name: syncapi
     build: 
       context: ./..
       dockerfile: docker/dockerfile-laravel
@@ -55,6 +75,16 @@ services:
       - "80:80"
     extra_hosts:
         host.docker.internal: host-gateway
+    depends_on:
+      db_cloud:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+        test: "curl -f http://syncapi/api/captor/:80"
+        interval: 2s
+        timeout: 2s
+        retries: 10
     environment:
       MYSQL_HOST: 'dbcloud'
       MYSQL_DATABASE: 'AirLuxDB'
@@ -67,4 +97,5 @@ volumes:
   local-db:
   syncapp:
   nodeapp:
+  mosquitto:
       
