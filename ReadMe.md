@@ -1,2 +1,19 @@
 ## Documentation
-View documentation and all information in notion : https://hallowed-timimus-dfc.notion.site/Airlux-30a742c5c98c49b1b371ed8b0b422972
+POC : mosquitto + nodejs
+
+HOW TO RUN :
+```
+# clone repo (uwu)
+cd docker
+docker compose build
+docker compose run
+
+# run mosquitto broker
+docker exec -ti brokermosq mosquitto -c /mosquitto/config/mosquitto.conf
+
+# subscribe with node app
+docker exec -ti pubsubjs node sub.js
+
+# publish with node app
+docker exec -ti pubsubjs node pub.js
+```
