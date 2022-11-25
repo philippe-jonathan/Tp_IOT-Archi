@@ -1,11 +1,10 @@
-## Objective
-- One stack with two containers : 1-NGINX / 2-Redis
-- Get data in Redis database with NGINX
+## Documentation
+POC : Websocket + nodejs
 
-## Problem
+HOW TO RUN :
+```
+docker-compose up --build --force-recreate --no-deps
 
-## Run docker compose
-- In root project : docker-compose up
-
-## - Jonathan
-- Mettre un timestamp en clé pour vhaque valeur envoyés dans redis ✅
+#connect to websocket
+ws://localhost:8081
+```
