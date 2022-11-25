@@ -1,101 +1,58 @@
-version: '3'
-services:
-  redis: 
-    image: 'redis'
-    container_name: redis
-    volumes:
-      - local-db:/bitnami/redis/data
-    build: 
-      context: ./..
-      dockerfile: docker/dockerfile-redis
-    healthcheck:
-        test: ["CMD", "redis-cli","ping"]
-        interval: 2s
-        timeout: 2s
-        retries: 10
-      
-  mosquitto:
-    image: eclipse-mosquitto:2
-    container_name: mosquitto
-    volumes:
-      - ../mosquitto/config/:/mosquitto/config/:ro
-      - ../mosquitto/log/:/mosquitto/log/
-      - mosquitto:/mosquitto/data/
-    ports:
-      - 1883:1883
-      - 9001:9001
-  
-  node-app:
-    build: 
-      context: ./..
-      dockerfile: docker/dockerfile-pulsor
-    container_name: pulsor
-    ports:
-      - "7071:7071"
-    depends_on:
-      redis:
-        condition: service_healthy
-    volumes:
-      - nodeapp:/usr/app/
-      - nodeapp:/usr/app/node_modules
-  
-  db_cloud:
-    tty: true
-    image: mysql:5.7
-    container_name: dbcloud
-    build: 
-      context: ./..
-      dockerfile: docker/dockerfile-mysql
-    healthcheck:
-        test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-        interval: 2s
-        timeout: 2s
-        retries: 10
-    environment:
-      MYSQL_ROOT_HOST: '%'
-      MYSQL_DATABASE: 'AirLuxDB'
-      # So you don't have to use root, but you can if you like
-      MYSQL_USER: 'user'
-      # You can use whatever password you like
-      MYSQL_PASSWORD: 'password'
-      # Password for root access
-      MYSQL_ROOT_PASSWORD: 'password'
-    volumes:
-      - cloud-db:/var/lib/mysql
-  
-  syncapi:
-    tty: true
-    image: bitnami/laravel
-    container_name: syncapi
-    build: 
-      context: ./..
-      dockerfile: docker/dockerfile-laravel
-    working_dir: /var/www/
-    ports:
-      - "80:80"
-    extra_hosts:
-        host.docker.internal: host-gateway
-    depends_on:
-      db_cloud:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    healthcheck:
-        test: "curl -f http://syncapi/api/captor/:80"
-        interval: 2s
-        timeout: 2s
-        retries: 10
-    environment:
-      MYSQL_HOST: 'dbcloud'
-      MYSQL_DATABASE: 'AirLuxDB'
-    volumes:
-      - syncapp:/var/www
-      
-# Names our volume
+version: '3.8'
+
 volumes:
-  cloud-db:
-  local-db:
-  syncapp:
-  nodeapp:
-  mosquitto:
-      
+  prometheus_data:
+  grafana-data:
+
+services:
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    ports:
+      - 9100:9100
+    networks:
+      - monitoring
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    volumes:
+      - ./../prometheus/:/etc/prometheus/
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    ports:
+      - 9090:9090
+    networks:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:4.5.0
+    container_name: grafana
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    volumes:
+      - ./../grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./../grafana/grafana:/var/lib/grafana
+    networks:
+      - monitoring
+
+networks:
+  monitoring:
+    driver: bridge
