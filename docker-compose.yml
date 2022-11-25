@@ -1,0 +1,25 @@
+version: "3.9"
+services:
+  server:
+    image: 'server'
+    build: 
+      context: ./
+      dockerfile: dockerfile-server
+    command: bash -c "node index.js"
+    volumes:
+      - .:/myappserver
+    ports:
+      - "8081:8081"
+
+  client:
+    image: 'client'
+    build: 
+      context: ./
+      dockerfile: dockerfile-client
+    command: bash -c "node index.js"
+    volumes:
+      - .:/myappclient
+    ports:
+      - "8080:8080"
+    depends_on:
+      - server
