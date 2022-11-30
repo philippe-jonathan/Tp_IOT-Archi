@@ -1,5 +1,19 @@
 version: '3'
 services:
+  redis: 
+    image: 'redis'
+    container_name: redis
+    volumes:
+      - local-db:/bitnami/redis/data
+    build: 
+      context: ./..
+      dockerfile: docker/dockerfile-redis
+    healthcheck:
+        test: ["CMD", "redis-cli","ping"]
+        interval: 2s
+        timeout: 2s
+        retries: 10
+      
   mosquitto:
     image: eclipse-mosquitto:2
     container_name: brokermosq
@@ -7,25 +21,82 @@ services:
     volumes:
       - ./../mosquitto/config/:/mosquitto/config/:ro
       - ./../mosquitto/log/:/mosquitto/log/
-      - data:/mosquitto/data/
+      - mosquidata:/mosquitto/data/
     ports:
       - 1883:1883
       - 9001:9001
   
-  pubsubjs:
-    tty: true
-    build:
+  node-app:
+    build: 
       context: ./..
-      dockerfile: docker/dockerfile-pubsubjs
-    container_name: pubsubjs
+      dockerfile: docker/dockerfile-pulsor
+    container_name: pulsor
     ports:
       - "7071:7071"
+    depends_on:
+      redis:
+        condition: service_healthy
     volumes:
       - nodeapp:/usr/app/
       - nodeapp:/usr/app/node_modules
+  
+  db_cloud:
+    tty: true
+    image: mysql:5.7
+    container_name: dbcloud
+    build: 
+      context: ./..
+      dockerfile: docker/dockerfile-mysql
+    healthcheck:
+        test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+        interval: 2s
+        timeout: 2s
+        retries: 10
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_DATABASE: 'AirLuxDB'
+      # So you don't have to use root, but you can if you like
+      MYSQL_USER: 'user'
+      # You can use whatever password you like
+      MYSQL_PASSWORD: 'password'
+      # Password for root access
+      MYSQL_ROOT_PASSWORD: 'password'
+    volumes:
+      - cloud-db:/var/lib/mysql
+  
+  syncapi:
+    tty: true
+    image: bitnami/laravel
+    container_name: syncapi
+    build: 
+      context: ./..
+      dockerfile: docker/dockerfile-laravel
+    working_dir: /var/www/
+    ports:
+      - "80:80"
+    extra_hosts:
+        host.docker.internal: host-gateway
+    depends_on:
+      db_cloud:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+        test: "curl -f http://syncapi/api/captor/:80"
+        interval: 2s
+        timeout: 2s
+        retries: 10
+    environment:
+      MYSQL_HOST: 'dbcloud'
+      MYSQL_DATABASE: 'AirLuxDB'
+    volumes:
+      - syncapp:/var/www
       
 # Names our volume
 volumes:
+  cloud-db:
+  local-db:
+  syncapp:
   nodeapp:
-  data:
+  mosquidata:
       

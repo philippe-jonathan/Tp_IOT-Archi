@@ -1,7 +1,9 @@
 ## Docker configuration
 
 # Images 
-- Mosquitto
+- Laravel
+- MySQL
+- Redis
 - Node
 
 ## Stack and Containers
@@ -9,8 +11,10 @@
 - Docker
 
 # Containers
-- pubsubjs
-- brokermosq
+- redis
+- syncapp
+- dbcloud
+- node-app-1
 
 ## Lancer le projet
 - Depuis un terminal allerdans le dossier "docker" et lancer la commande "docker build"

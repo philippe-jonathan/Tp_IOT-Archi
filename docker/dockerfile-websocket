@@ -6,15 +6,15 @@ FROM node:18
 COPY /pubsubjs/package*.json ./
 
 RUN apt-get update -qq && apt-get install -y gcc make build-essential
-RUN mkdir -p /home/pubsubjs
-WORKDIR /home/pubsubjs/
+RUN mkdir -p /home/websocketjs
+WORKDIR /home/websocketjs/
 
 RUN npm install
 # If you are building your code for production
 # RUN npm ci --only=production
 
 # Bundle app source
-COPY /pubsubjs/. .
+COPY /websocketjs/. .
 
 EXPOSE 7071
 
