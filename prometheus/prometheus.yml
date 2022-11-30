@@ -1,18 +1,29 @@
+---
 global:
-  scrape_interval: 1m
+  scrape_interval:     15s # By default, scrape targets every 15 seconds.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds.
 
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
 scrape_configs:
-  - job_name: "prometheus"
-    scrape_interval: 1m
-    static_configs:
-    - targets: ["prometheus:9090"]
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'prometheus'
 
-  - job_name: "node"
-    static_configs:
-    - targets: ["node-exporter:9100"]
+    # Override the global default and scrape targets from this job every 5 seconds.
+    scrape_interval: 5s
 
-remote_write:
-- url: https://prometheus-prod-01-eu-west-0.grafana.net/api/prom/push
-  basic_auth:
-    username: 666339
-    password: eyJrIjoiMjBkY2M0NDFmYzZhNzNkNDViNmIxZGUzMTYwM2UyNGUxYzlkMDIxYyIsIm4iOiJDTEFQSUtFWSIsImlkIjo3NTA0MDZ9
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'mysqld'
+
+    # Override the global default and scrape targets from this job every 5 seconds.
+    scrape_interval: 5s
+
+    static_configs:
+      - targets: ['mysqld-exporter:9104']
+
+  - job_name: 'node'
+
+    static_configs:
+      - targets: ['node-exporter:9100']
