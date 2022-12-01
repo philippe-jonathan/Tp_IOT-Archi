@@ -31,11 +31,11 @@ RUN mkdir -p /home/user/.composer \
     && chown -R user:user /home/user
 
 WORKDIR /var/www/sync-api
-COPY sync-api/ /var/www/
-COPY sync-api/.env.example /var/www/.env
+COPY syncapi/ /var/www/
+COPY syncapi/.env.example /var/www/.env
 
-COPY sync-api/set_up_api.sh /root/set_up_api.sh
-COPY sync-api/vhost.conf /etc/apache2/sites-available/000-default.conf
+COPY syncapi/set_up_api.sh /root/set_up_api.sh
+COPY syncapi/vhost.conf /etc/apache2/sites-available/000-default.conf
 WORKDIR /root
 # Run necessary services
 RUN chmod u+x set_up_api.sh \
