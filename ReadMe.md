@@ -15,14 +15,14 @@ docker exec -ti brokermosq mosquitto -c /mosquitto/config/mosquitto.conf
 
 ## Integration checklist
 - [x] pulsor (nodejs) : need to push to mosquitto and not redis
-- [x] brokermosq (mosquitto)
-- [ ] websocket (nodejs)
+- [x] broker (mosquitto)
+- [ ] localapp (nodejs)
 - [x] dblocal (redis)
 - [x] syncapp (laravel) : remove direct connection to redis since websocket connect trought socket
 - [x] dbcloud (mysql)
 - [ ] validator (nodejs)
-- [ ] dbstat (prometheus)
-- [ ] statapp (grafana)
+- [ ] dbstats (prometheus)
+- [ ] statsapp (grafana)
 - [ ] phoneapp (flutter)
 
 
@@ -32,7 +32,7 @@ docker exec -ti brokermosq mosquitto -c /mosquitto/config/mosquitto.conf
 
 
 ## Assignment
-- Dang - websocket
+- Dang/Aymeric - websocket
 - Jonathan/Loup - validator
-- Benoît/Artus - Prometheus/Grafana integration
-- Aymeric - sick last session
+- Benoît - Prometheus/Grafana integration
+- Artus - sick
