@@ -15,24 +15,24 @@ docker exec -ti brokermosq mosquitto -c /mosquitto/config/mosquitto.conf
 
 ## Integration checklist
 - [x] pulsor (nodejs) : need to push to mosquitto and not redis
-- [x] brokermosq (mosquitto)
-- [ ] websocket (nodejs)
+- [x] broker (mosquitto)
+- [ ] localapp (nodejs)
 - [x] dblocal (redis)
-- [x] syncapp (laravel) : remove direct connection to redis since websocket connect trought socket
+- [x] syncapi (laravel) : remove direct connection to redis since websocket connect trought socket
 - [x] dbcloud (mysql)
 - [ ] validator (nodejs)
-- [ ] dbstat (prometheus)
-- [ ] statapp (grafana)
+- [ ] dbstats (prometheus)
+- [ ] statsapp (grafana)
 - [ ] phoneapp (flutter)
 
 
 ## To do
-- Confirm services name and rename folders, dockerfiles, services (compose)
-- Set up a post merging process (with tech lead (maybe PO ?))
+- [x] Confirm services name and rename folders, dockerfiles, services (compose)
+- [x] Set up a post merging process (with tech lead (maybe PO ?))
 
 
 ## Assignment
-- Dang - websocket
+- Dang/Aymeric - websocket
 - Jonathan/Loup - validator
-- Benoît/Artus - Prometheus/Grafana integration
-- Aymeric - sick last session
+- Benoît - Prometheus/Grafana integration
+- Artus - sick
