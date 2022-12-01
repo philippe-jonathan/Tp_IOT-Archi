@@ -18,7 +18,7 @@ RUN apt-get update \
 
 WORKDIR /root
 
-COPY /mysql/set_up_db.sh /root/set_up_db.sh
+COPY /dbcloud/set_up_db.sh /root/set_up_db.sh
 
 RUN chmod u+x set_up_db.sh
 
@@ -26,6 +26,6 @@ RUN chmod u+x set_up_db.sh
 RUN ["/bin/bash", "/root/set_up_db.sh"]
 
 WORKDIR /home
-COPY /mysql/start_db.sh /home/start_db.sh
+COPY /dbcloud/start_db.sh /home/start_db.sh
 RUN chmod u+x start_db.sh
 ENTRYPOINT ["/bin/bash", "/home/start_db.sh"]

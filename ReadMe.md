@@ -18,7 +18,7 @@ docker exec -ti brokermosq mosquitto -c /mosquitto/config/mosquitto.conf
 - [x] broker (mosquitto)
 - [ ] localapp (nodejs)
 - [x] dblocal (redis)
-- [x] syncapp (laravel) : remove direct connection to redis since websocket connect trought socket
+- [x] syncapi (laravel) : remove direct connection to redis since websocket connect trought socket
 - [x] dbcloud (mysql)
 - [ ] validator (nodejs)
 - [ ] dbstats (prometheus)

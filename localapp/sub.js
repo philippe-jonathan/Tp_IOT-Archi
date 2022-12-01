@@ -1,5 +1,5 @@
 const mqtt = require("mqtt");
-var client = mqtt.connect('mqtt://mosquitto');
+var client = mqtt.connect('mqtt://broker');
 
 client.on('connect', function(){
     client.subscribe("Bogoss");

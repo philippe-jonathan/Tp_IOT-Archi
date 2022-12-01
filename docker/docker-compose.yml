@@ -1,32 +1,32 @@
 version: '3'
 services:
-  redis: 
+  dblocal: 
     image: 'redis'
-    container_name: redis
+    container_name: dblocal
     volumes:
-      - local-db:/bitnami/redis/data
+      - dblocal-data:/bitnami/redis/data
     build: 
       context: ./..
-      dockerfile: docker/dockerfile-redis
+      dockerfile: docker/dockerfile-dblocal
     healthcheck:
         test: ["CMD", "redis-cli","ping"]
         interval: 2s
         timeout: 2s
         retries: 10
       
-  mosquitto:
+  broker:
     image: eclipse-mosquitto:2
-    container_name: brokermosq
+    container_name: broker
     tty: true
     volumes:
-      - ./../mosquitto/config/:/mosquitto/config/:ro
-      - ./../mosquitto/log/:/mosquitto/log/
-      - mosquidata:/mosquitto/data/
+      - ./../broker/config/:/mosquitto/config/:ro
+      - ./../broker/log/:/mosquitto/log/
+      - broker-data:/mosquitto/data/
     ports:
       - 1883:1883
       - 9001:9001
   
-  node-app:
+  pulsor:
     build: 
       context: ./..
       dockerfile: docker/dockerfile-pulsor
@@ -34,19 +34,19 @@ services:
     ports:
       - "7071:7071"
     depends_on:
-      redis:
+      dblocal:
         condition: service_healthy
     volumes:
-      - nodeapp:/usr/app/
-      - nodeapp:/usr/app/node_modules
+      - pulsor-data:/usr/app/
+      - pulsor-data:/usr/app/node_modules
   
-  db_cloud:
+  dbcloud:
     tty: true
     image: mysql:5.7
     container_name: dbcloud
     build: 
       context: ./..
-      dockerfile: docker/dockerfile-mysql
+      dockerfile: docker/dockerfile-dbcloud
     healthcheck:
         test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
         interval: 2s
@@ -62,7 +62,7 @@ services:
       # Password for root access
       MYSQL_ROOT_PASSWORD: 'password'
     volumes:
-      - cloud-db:/var/lib/mysql
+      - dbcloud-data:/var/lib/mysql
   
   syncapi:
     tty: true
@@ -70,16 +70,14 @@ services:
     container_name: syncapi
     build: 
       context: ./..
-      dockerfile: docker/dockerfile-laravel
+      dockerfile: docker/dockerfile-syncapp
     working_dir: /var/www/
     ports:
       - "80:80"
     extra_hosts:
         host.docker.internal: host-gateway
     depends_on:
-      db_cloud:
-        condition: service_healthy
-      redis:
+      dbcloud:
         condition: service_healthy
     healthcheck:
         test: "curl -f http://syncapi/api/captor/:80"
@@ -90,13 +88,13 @@ services:
       MYSQL_HOST: 'dbcloud'
       MYSQL_DATABASE: 'AirLuxDB'
     volumes:
-      - syncapp:/var/www
+      - syncapp-data:/var/www
       
 # Names our volume
 volumes:
-  cloud-db:
-  local-db:
-  syncapp:
-  nodeapp:
-  mosquidata:
+  dbcloud-data:
+  dblocal-data:
+  syncapp-data:
+  pulsor-data:
+  broker-data:
       
