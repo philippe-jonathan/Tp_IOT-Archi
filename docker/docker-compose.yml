@@ -89,6 +89,50 @@ services:
       MYSQL_DATABASE: 'AirLuxDB'
     volumes:
       - syncapp-data:/var/www
+
+  dbstats:
+    image: quay.io/prometheus/prometheus:latest
+    container_name: dbstats
+    volumes:
+      - ./../dbstats:/etc/prometheus
+      - dbstats_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+#      - '-storage.local.path=/prometheus'
+    ports:
+      - 9090:9090
+    links:
+      - mysqld-exporter
+      
+  statsapp:
+    image: grafana/grafana:latest
+    container_name: statsapp
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=secret
+      - GF_ALERTING_EXECUTE_ALERTS=false
+    volumes:
+      - statsapp_data:/var/lib/grafana
+    ports:
+      - 3000:3000
+    links:
+      - dbstats
+    depends_on:
+      - dbstats
+      
+  mysqld-exporter:
+    image: quay.io/prometheus/mysqld-exporter
+    command:
+     - --collect.info_schema.tablestats
+    container_name: mysqld-exporter
+    environment:
+      - DATA_SOURCE_NAME=root@(dbcloud:3306)/
+    ports:
+      - 9104:9104
+    links:
+      - dbcloud
+    depends_on:
+      - dbcloud
+  
       
 # Names our volume
 volumes:
@@ -97,4 +141,6 @@ volumes:
   syncapp-data:
   pulsor-data:
   broker-data:
+  dbstats_data: {}
+  statsapp_data: {}
       
