@@ -27,8 +27,8 @@ docker exec -ti brokermosq mosquitto -c /mosquitto/config/mosquitto.conf
 
 
 ## To do
-- Confirm services name and rename folders, dockerfiles, services (compose)
-- Set up a post merging process (with tech lead (maybe PO ?))
+- [x] Confirm services name and rename folders, dockerfiles, services (compose)
+- [x] Set up a post merging process (with tech lead (maybe PO ?))
 
 
 ## Assignment
