@@ -5,7 +5,7 @@ redis-server
 #chmod a+rwx /var/log/redis/redis-server.log
 #/etc/init.d/redis-server start /etc/redis/redis.conf
 redis-cli -x CONFIG SET protected-mode no
-redis-cli -x CONFIG SET notify-keyspace-events KEA
+#redis-cli -x CONFIG SET notify-keyspace-events KEA
 
 while [ 1 -le 10 ]
 do
