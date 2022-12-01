@@ -11,7 +11,7 @@ docker compose up
 
 #__________________MOSQUITTO____________________
 # START MOSQUITTO BROKER :
-docker exec -ti brokermosq mosquitto -c /mosquitto/config/mosquitto.conf
+docker exec -ti broker mosquitto -c /mosquitto/config/mosquitto.conf
 #_______________________________________________
 
 #____________PROMETHEUS / GRAFANA_______________
@@ -33,6 +33,12 @@ docker exec -ti brokermosq mosquitto -c /mosquitto/config/mosquitto.conf
 #______________________________________________
 ```
 
+# Assignment
+- Dang/Aymeric - websocket/localapp
+- Jonathan/Loup - MCD
+- Benoît - Laravel
+- Artus - sick
+
 # Integration checklist
 - [x] pulsor (nodejs) : need to push to mosquitto and not redis
 - [x] broker (mosquitto)
@@ -45,21 +51,12 @@ docker exec -ti brokermosq mosquitto -c /mosquitto/config/mosquitto.conf
 - [x] statsapp (grafana)
 - [ ] phoneapp (flutter)
 
-
-# To do (management)
+# TODO (management)
 - [x] Confirm services name and rename folders, dockerfiles, services (compose)
 - [x] Set up a post merging process (with tech lead (maybe PO ?))
 - [ ] Create MCD
 
-
-# Assignment
-- Dang/Aymeric - websocket/localapp
-- Jonathan/Loup - MCD
-- Benoît - Laravel
-- Artus - sick
-
-
-# Services
+# TODO Services
 ## statsapp-Grafana
 - [ ] Create graphs
 ## dbstats-Prometheus
