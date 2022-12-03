@@ -13,7 +13,19 @@ services:
         interval: 2s
         timeout: 2s
         retries: 10
-      
+  localapp:
+    image: 'localapp'
+    container_name: localapp
+    build: 
+      context: ./..
+      dockerfile: docker/dockerfile-localapp
+    command: bash -c "node index.js"
+    volumes:
+      - .:/localapp
+    ports:
+      - "8080:8080"
+    depends_on:
+      - syncapi
   broker:
     image: eclipse-mosquitto:2
     container_name: broker

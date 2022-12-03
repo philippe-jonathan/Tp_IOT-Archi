@@ -1,22 +1,13 @@
 FROM node:18
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
+
 COPY /localapp/package*.json ./
 
-RUN apt-get update -qq && apt-get install -y gcc make build-essential
-RUN mkdir -p /home/localapp
-WORKDIR /home/localapp/
-
-RUN npm install
-# If you are building your code for production
-# RUN npm ci --only=production
+RUN npm install --silent
 
 # Bundle app source
 COPY /localapp/. .
 
-EXPOSE 7071
+EXPOSE 8080
 
-#CMD ["node", "index.js"];
-VOLUME /project/logs
+CMD [ "node", "index.js" ]
