@@ -1,3 +1,4 @@
+import 'package:airlux/bleutooth.dart';
 import 'package:airlux/pairing.dart';
 import 'package:flutter/material.dart';
 
@@ -57,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return Pairing(title: 'Appairer un nouvel appareil');
+            return const BluetoothDeviceListPage();
           }));
         },
         tooltip: 'Nouveau',

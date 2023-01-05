@@ -1,22 +1,39 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-// Bleutooth package
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
-class Pairing extends StatefulWidget {
-  Pairing({Key? key, required this.title}) : super(key: key);
+// void main() => runApp(const Pairing(
+//       title: 'Appairer un appareil',
+//     ));
 
-  final String title;
+class Pairing extends StatelessWidget {
+  const Pairing({super.key, required String title});
+
+  @override
+  Widget build(BuildContext context) => MaterialApp(
+        // title: 'BLE Demo',
+        // theme: ThemeData(
+        //   primarySwatch: Colors.blue,
+        // ),
+        home: PairingPage(),
+      );
+}
+
+class PairingPage extends StatefulWidget {
+  PairingPage({Key? key}) : super(key: key);
+
   final FlutterBluePlus flutterBlue = FlutterBluePlus.instance;
   final List<BluetoothDevice> devicesList = <BluetoothDevice>[];
   final Map<Guid, List<int>> readValues = <Guid, List<int>>{};
 
   @override
-  ParingState createState() => ParingState();
+  PairingPageState createState() => PairingPageState();
 }
 
-class ParingState extends State<Pairing> {
+class PairingPageState extends State<PairingPage> {
+  final _writeController = TextEditingController();
   BluetoothDevice? _connectedDevice;
   List<BluetoothService> _services = [];
 
@@ -38,13 +55,11 @@ class ParingState extends State<Pairing> {
         _addDeviceTolist(device);
       }
     });
-
     widget.flutterBlue.scanResults.listen((List<ScanResult> results) {
       for (ScanResult result in results) {
         _addDeviceTolist(result.device);
       }
     });
-
     widget.flutterBlue.startScan();
   }
 
@@ -99,6 +114,108 @@ class ParingState extends State<Pairing> {
     );
   }
 
+  List<ButtonTheme> _buildReadWriteNotifyButton(
+      BluetoothCharacteristic characteristic) {
+    List<ButtonTheme> buttons = <ButtonTheme>[];
+
+    if (characteristic.properties.read) {
+      buttons.add(
+        ButtonTheme(
+          minWidth: 10,
+          height: 20,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: TextButton(
+              child: const Text('READ', style: TextStyle(color: Colors.white)),
+              onPressed: () async {
+                var sub = characteristic.value.listen((value) {
+                  setState(() {
+                    widget.readValues[characteristic.uuid] = value;
+                  });
+                });
+                await characteristic.read();
+                sub.cancel();
+              },
+            ),
+          ),
+        ),
+      );
+    }
+    if (characteristic.properties.write) {
+      buttons.add(
+        ButtonTheme(
+          minWidth: 10,
+          height: 20,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: ElevatedButton(
+              child: const Text('WRITE', style: TextStyle(color: Colors.white)),
+              onPressed: () async {
+                await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text("Write"),
+                        content: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: TextField(
+                                controller: _writeController,
+                              ),
+                            ),
+                          ],
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                            child: const Text("Send"),
+                            onPressed: () {
+                              characteristic.write(
+                                  utf8.encode(_writeController.value.text));
+                              Navigator.pop(context);
+                            },
+                          ),
+                          TextButton(
+                            child: const Text("Cancel"),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ],
+                      );
+                    });
+              },
+            ),
+          ),
+        ),
+      );
+    }
+    if (characteristic.properties.notify) {
+      buttons.add(
+        ButtonTheme(
+          minWidth: 10,
+          height: 20,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: ElevatedButton(
+              child:
+                  const Text('NOTIFY', style: TextStyle(color: Colors.white)),
+              onPressed: () async {
+                characteristic.value.listen((value) {
+                  setState(() {
+                    widget.readValues[characteristic.uuid] = value;
+                  });
+                });
+                await characteristic.setNotifyValue(true);
+              },
+            ),
+          ),
+        ),
+      );
+    }
+
+    return buttons;
+  }
+
   ListView _buildConnectDeviceView() {
     List<Widget> containers = <Widget>[];
 
@@ -115,6 +232,11 @@ class ParingState extends State<Pairing> {
                   children: <Widget>[
                     Text(characteristic.uuid.toString(),
                         style: const TextStyle(fontWeight: FontWeight.bold)),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    ..._buildReadWriteNotifyButton(characteristic),
                   ],
                 ),
                 Row(
@@ -151,50 +273,10 @@ class ParingState extends State<Pairing> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: _buildView(),
-    );
-  }
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+            // title: Text(widget.title),
+            ),
+        body: _buildView(),
+      );
 }
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     appBar: AppBar(
-  //       title: Text(title),
-  //     ),
-  //     body: Center(
-  //       child: Column(
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         children: [
-  //           Expanded(
-  //             child: Align(
-  //               alignment: Alignment.bottomCenter,
-  //               child: Container(
-  //                 margin: const EdgeInsets.fromLTRB(5, 0, 5, 50),
-  //                 width: double.infinity,
-  //                 height: 50,
-  //                 child: ElevatedButton(
-  //                   style: ButtonStyle(
-  //                       shape:
-  //                           MaterialStateProperty.all<RoundedRectangleBorder>(
-  //                               RoundedRectangleBorder(
-  //                     borderRadius: BorderRadius.circular(50.0),
-  //                   ))),
-  //                   onPressed: () {},
-  //                   child: const Text(
-  //                       'Rechercher '), // trying to move to the bottom
-  //                 ),
-  //               ),
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
-// }
