@@ -57,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return const Pairing(title: 'Appairer un nouvel appareil');
+            return Pairing(title: 'Appairer un nouvel appareil');
           }));
         },
         tooltip: 'Nouveau',
