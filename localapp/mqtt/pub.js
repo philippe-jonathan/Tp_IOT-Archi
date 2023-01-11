@@ -9,7 +9,7 @@ client.on("connect", function(){
     setInterval(function(){
         var random = getRandomTemp(15, 30);
         console.log(random);
-        client.publish('home/captor/temp', process.env.PULSOR_ID + "//" + random.toString())
+        client.publish('home/captor/temp', random.toString())
         
     }, 1000), 30000;
 });

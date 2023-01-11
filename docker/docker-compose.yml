@@ -3,8 +3,11 @@ services:
   dblocal: 
     image: 'redis'
     container_name: dblocal
+    tty: true
     volumes:
       - dblocal-data:/bitnami/redis/data
+    ports:
+      - 6379:6379
     build: 
       context: ./..
       dockerfile: docker/dockerfile-dblocal
@@ -13,19 +16,32 @@ services:
         interval: 2s
         timeout: 2s
         retries: 10
+    networks:
+      - iotnetwork
+
+
   localapp:
     image: 'localapp'
     container_name: localapp
+    tty: true
     build: 
       context: ./..
       dockerfile: docker/dockerfile-localapp
-    command: bash -c "node index.js"
-    volumes:
-      - .:/localapp
-    ports:
-      - "8080:8080"
+    environment:
+      CLIENT_ID: 'Air_Lux_Test'
     depends_on:
+      - broker
       - syncapi
+      - dblocal
+    #command: bash -c "node index.js"
+    volumes:
+      - ./../localapp/:/usr/app/
+      - localapp-data:/usr/app/
+      - localapp-data:/usr/app/node_modules
+    networks:
+      - iotnetwork
+
+
   broker:
     image: eclipse-mosquitto:2
     container_name: broker
@@ -37,20 +53,60 @@ services:
     ports:
       - 1883:1883
       - 9001:9001
+    networks:
+      - iotnetwork
+
   
-  pulsor:
+  pulsor1:
     build: 
       context: ./..
       dockerfile: docker/dockerfile-pulsor
-    container_name: pulsor
-    ports:
-      - "7071:7071"
+    container_name: pulsor1
+    environment:
+      PULSOR_ID: '0000001'
     depends_on:
       dblocal:
         condition: service_healthy
     volumes:
-      - pulsor-data:/usr/app/
-      - pulsor-data:/usr/app/node_modules
+      - pulsor1-data:/usr/app/
+      - pulsor1-data:/usr/app/node_modules
+    networks:
+      - iotnetwork
+  
+  pulsor2:
+    build: 
+      context: ./..
+      dockerfile: docker/dockerfile-pulsor
+    container_name: pulsor2
+    environment:
+      PULSOR_ID: '0000002'
+    depends_on:
+      dblocal:
+        condition: service_healthy
+    volumes:
+      - pulsor2-data:/usr/app/
+      - pulsor2-data:/usr/app/node_modules
+    networks:
+      - iotnetwork
+      
+
+  
+  pulsor3:
+    build: 
+      context: ./..
+      dockerfile: docker/dockerfile-pulsor
+    container_name: pulsor3
+    environment:
+      PULSOR_ID: '0000003'
+    depends_on:
+      dblocal:
+        condition: service_healthy
+    volumes:
+      - pulsor3-data:/usr/app/
+      - pulsor3-data:/usr/app/node_modules
+    networks:
+      - iotnetwork
+
   
   dbcloud:
     tty: true
@@ -64,6 +120,8 @@ services:
         interval: 2s
         timeout: 2s
         retries: 10
+    ports:
+      - "3306:3306"
     environment:
       MYSQL_ROOT_HOST: '%'
       MYSQL_DATABASE: 'AirLuxDB'
@@ -75,6 +133,8 @@ services:
       MYSQL_ROOT_PASSWORD: 'password'
     volumes:
       - dbcloud-data:/var/lib/mysql
+    networks:
+      - iotnetwork
   
   syncapi:
     tty: true
@@ -86,27 +146,30 @@ services:
     working_dir: /var/www/
     ports:
       - "80:80"
+      - "6001:6001"
     extra_hosts:
         host.docker.internal: host-gateway
     depends_on:
       dbcloud:
         condition: service_healthy
-    healthcheck:
-        test: "curl -f http://syncapi/api/captor/:80"
-        interval: 2s
-        timeout: 2s
-        retries: 10
     environment:
       MYSQL_HOST: 'dbcloud'
       MYSQL_DATABASE: 'AirLuxDB'
     volumes:
       - syncapp-data:/var/www
+    networks:
+      - iotnetwork
+networks:
+  iotnetwork:
       
 # Names our volume
 volumes:
   dbcloud-data:
   dblocal-data:
   syncapp-data:
-  pulsor-data:
   broker-data:
+  localapp-data:
+  pulsor1-data:
+  pulsor2-data:
+  pulsor3-data:
       

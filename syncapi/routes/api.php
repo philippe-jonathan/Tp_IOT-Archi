@@ -1,7 +1,8 @@
 <?php
-
+use App\WebSocketHandler;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use BeyondCode\LaravelWebSockets\Facades\WebSocketsRouter;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +24,9 @@ Route::apiResource('/captor', 'CaptorController');
 Route::get('/', function(){
      return "home";
 });
+
+WebSocketsRouter::webSocket('/socket', \App\Http\Controllers\WebSocketController::class);
+
 
 // here for test, should be deleted before export
 // Route::get('/', function(){

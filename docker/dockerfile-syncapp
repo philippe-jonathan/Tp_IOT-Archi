@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip
 
-RUN printf "\n \n" | pecl install redis && docker-php-ext-enable redis
+#RUN printf "\n \n" | pecl install redis && docker-php-ext-enable redis
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -30,22 +30,16 @@ RUN useradd -G www-data,root -u 1000 -d /home/user user
 RUN mkdir -p /home/user/.composer \ 
     && chown -R user:user /home/user
 
-WORKDIR /var/www/sync-api
+WORKDIR /var/www
 COPY syncapi/ /var/www/
 COPY syncapi/.env.example /var/www/.env
-
-COPY syncapi/set_up_api.sh /root/set_up_api.sh
 COPY syncapi/vhost.conf /etc/apache2/sites-available/000-default.conf
-WORKDIR /root
+
 # Run necessary services
 RUN chmod u+x set_up_api.sh \
+    && chmod u+x start_websocket.sh \
     && chown -R www-data:www-data /var/www \
     && a2enmod rewrite
-RUN ["/bin/bash", "/root/set_up_api.sh"]
+RUN ["/bin/bash", "/var/www/set_up_api.sh"]
 
-#USER user
-#COPY /sync-api/ /var/www/sync-api/
-
-    
-# Set working directory
-#WORKDIR /root
+CMD ["/bin/bash", "/var/www/start_websocket.sh"]

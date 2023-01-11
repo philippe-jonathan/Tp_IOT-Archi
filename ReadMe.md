@@ -7,16 +7,19 @@ View documentation and all information in notion : https://hallowed-timimus-dfc.
 # clone repo (uwu)
 cd docker
 docker compose build
-docker compose up
 
-# start mosquitto broker
-docker exec -ti brokermosq mosquitto -c /mosquitto/config/mosquitto.conf
+# On one side
+docker compose up localapp
+
+# On another
+docker compose up pulsor1 pulsor2 pulsor3
+# Just ctrl-c to stop pulsors and up again to restart
 ```
 
 ## Integration checklist
 - [x] pulsor (nodejs) : need to push to mosquitto and not redis
 - [x] broker (mosquitto)
-- [ ] localapp (nodejs)
+- [x] localapp (nodejs)
 - [x] dblocal (redis)
 - [x] syncapi (laravel) : remove direct connection to redis since websocket connect trought socket
 - [x] dbcloud (mysql)
