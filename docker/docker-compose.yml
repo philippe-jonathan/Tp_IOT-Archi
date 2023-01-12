@@ -16,8 +16,6 @@ services:
         interval: 2s
         timeout: 2s
         retries: 10
-    networks:
-      - iotnetwork
 
 
   localapp:
@@ -38,8 +36,6 @@ services:
       - ./../localapp/:/usr/app/
       - localapp-data:/usr/app/
       - localapp-data:/usr/app/node_modules
-    networks:
-      - iotnetwork
 
 
   broker:
@@ -53,8 +49,6 @@ services:
     ports:
       - 1883:1883
       - 9001:9001
-    networks:
-      - iotnetwork
 
   
   pulsor1:
@@ -70,8 +64,6 @@ services:
     volumes:
       - pulsor1-data:/usr/app/
       - pulsor1-data:/usr/app/node_modules
-    networks:
-      - iotnetwork
   
   pulsor2:
     build: 
@@ -86,8 +78,6 @@ services:
     volumes:
       - pulsor2-data:/usr/app/
       - pulsor2-data:/usr/app/node_modules
-    networks:
-      - iotnetwork
       
 
   
@@ -104,8 +94,6 @@ services:
     volumes:
       - pulsor3-data:/usr/app/
       - pulsor3-data:/usr/app/node_modules
-    networks:
-      - iotnetwork
 
   
   dbcloud:
@@ -133,8 +121,6 @@ services:
       MYSQL_ROOT_PASSWORD: 'password'
     volumes:
       - dbcloud-data:/var/lib/mysql
-    networks:
-      - iotnetwork
   
   syncapi:
     tty: true
@@ -157,8 +143,6 @@ services:
       MYSQL_DATABASE: 'AirLuxDB'
     volumes:
       - syncapp-data:/var/www
-    networks:
-      - iotnetwork
 
   dbstats:
     image: quay.io/prometheus/prometheus:latest
@@ -173,8 +157,6 @@ services:
       - 9090:9090
     links:
       - mysqld-exporter
-    networks:
-      - iotnetwork
       
   statsapp:
     image: grafana/grafana:latest
@@ -190,8 +172,6 @@ services:
       - dbstats
     depends_on:
       - dbstats
-    networks:
-      - iotnetwork
       
   mysqld-exporter:
     image: quay.io/prometheus/mysqld-exporter
@@ -199,18 +179,14 @@ services:
      - --collect.info_schema.tablestats
     container_name: mysqld-exporter
     environment:
-      - DATA_SOURCE_NAME=root@(dbcloud:3306)/
+      - DATA_SOURCE_NAME=root:password@(dbcloud:3306)/
     ports:
       - 9104:9104
     links:
       - dbcloud
     depends_on:
       - dbcloud
-    networks:
-      - iotnetwork
       
-networks:
-  iotnetwork:
       
 # Names our volume
 volumes:
