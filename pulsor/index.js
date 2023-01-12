@@ -1,31 +1,11 @@
 'use strict';
 
-// NOTE - Require
-const redis = require('redis');
-
-// NOTE - REDIS
-const client = redis.createClient({
-  url: 'redis://dblocal',
-  port: 6379
-});
-
-async function redis_connection() {
-  client.connect(function(err) {
-    if(err) throw err;
-    console.log("Redis database connected!")
-  })
-}
-// --------------------
-
-// NOTE - Redis connection
-redis_connection();
-
-// NOTE - BROKER (Mosquirtto)
+// NOTE - BROKER (Mosquitto)
 var settings = {
   type: 'mqtt',
   json: false,
   mqtt: require('mqtt'),
-  url: 'mqtt://localhost:8883'
+  url: 'mqtt://broker'
 };
 
 function getRandomTemp(min, max) {
@@ -51,25 +31,21 @@ setInterval(async () => {
   
   // Filter data in redis DB
   let json = JSON.parse(data_send);
-  if(json.value && json.client_id && json.name && json.id) {
-    console.log("value type is OK");
-    await client.set(getTimestamp(), data_send);
-    // NOTE - PUBLISHER
-    // -------------------
-    console.log("New value added: "+ random);
-  } else {
-    console.log("ERROR value type in database");
-  }
 
-}, 1000);
+  const mqtt = require("mqtt");
+  var client = mqtt.connect('mqtt://broker');
 
-// var mosca = require('mosca');
-// var settings = {port: 1883};
-// var broker = new mosca.Server(settings);
-
-// broker.on('ready', () => {
-//     console.log('Broker is ready!');
-// });
-
-// Check data in two db (requete SQL et redis pour comparer)
-// let current_value = await client.get('value');
+  client.on("connect", function(){
+      setInterval(async () => {
+        {
+          try{
+              await client.publish('captorValue', json + "#_TS:" + getTimestamp)
+              console.log("New value added: "+ random);
+          }
+          catch(error){
+            console.error(error);
+          }
+        }
+      }), 30000;
+  });
+});

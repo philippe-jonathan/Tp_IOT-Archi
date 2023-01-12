@@ -131,7 +131,8 @@ services:
     links:
       - dbcloud
     depends_on:
-      - dbcloud
+      dbcloud:
+        condition: service_healthy
   
       
 # Names our volume
