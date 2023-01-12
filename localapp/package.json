@@ -1,5 +1,5 @@
 {
-  "name": "pubsubjs",
+  "name": "pulseur",
   "version": "1.0.0",
   "description": "test nodeJS call to redis db",
   "main": "src/index.js",

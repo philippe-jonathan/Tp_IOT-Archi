@@ -14,15 +14,26 @@ su user
 export COMPOSER_HOME="$HOME/.config/composer";
 cd /var/www/
 composer install
-composer require predis/predis
+#composer require predis/predis
 #docker system prune -agit clone https://github.com/phpredis/phpredis.git
 ###cd phpredis
 #phpize
 #./configure
-make && make install
+#make && make install
 #cd ..
 
-php artisan optimize
 composer dump-autoload
 php artisan key:generate
+
+
+composer require beyondcode/laravel-websockets
+php artisan vendor:publish --provider="BeyondCode\LaravelWebSockets\WebSocketsServiceProvider" --tag="migrations"
+php artisan migrate
+php artisan vendor:publish --provider="BeyondCode\LaravelWebSockets\WebSocketsServiceProvider" --tag="config"
+
+composer require pusher/pusher-php-server
+
+composer require cboden/ratchet
+php artisan vendor:publish --provider="Askedio\LaravelRatchet\Providers\LaravelRatchetServiceProvider"
+php artisan optimize
 #php artisan redis:suscribe

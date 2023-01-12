@@ -7,7 +7,6 @@ View documentation and all information in notion : https://hallowed-timimus-dfc.
 # clone repo (uwu)
 cd docker
 docker compose build
-docker compose up
 
 #__________________MOSQUITTO____________________
 # START MOSQUITTO BROKER :
@@ -31,6 +30,7 @@ docker exec -ti broker mosquitto -c /mosquitto/config/mosquitto.conf
 # Select dashboard - import
 # choose a Json from grafana folder or find an ID on grafana.com
 #______________________________________________
+#
 ```
 
 # Assignment
@@ -42,7 +42,7 @@ docker exec -ti broker mosquitto -c /mosquitto/config/mosquitto.conf
 # Integration checklist
 - [x] pulsor (nodejs) : need to push to mosquitto and not redis
 - [x] broker (mosquitto)
-- [ ] localapp (nodejs)
+- [x] localapp (nodejs)
 - [x] dblocal (redis)
 - [x] syncapi (laravel) : remove direct connection to redis since websocket connect trought socket
 - [x] dbcloud (mysql)
