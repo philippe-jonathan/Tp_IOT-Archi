@@ -1,3 +1,4 @@
+import 'package:airlux/pages/devices_page.dart';
 import 'package:flutter/material.dart';
 
 bool status = false;
@@ -41,5 +42,17 @@ class MyHomePageState extends State<MyHomePage> {
             )
           ],
         )),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const DevicesPage(
+                        title: 'Devices',
+                      )),
+            );
+          },
+          child: const Icon(Icons.add),
+        ),
       );
 }
