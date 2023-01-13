@@ -11,35 +11,15 @@
 #define DHTPIN 14
 #define DHTTYPE DHT11
 DHT dht(DHTPIN, DHTTYPE);
-#include <PubSubClient.h>
-#include <SPI.h>
-#include <WiFi.h>
-#include <ESP32Ping.h>
-
-// Update these with values suitable for your network.
-byte mac[]    = {  0xDE, 0xED, 0xBA, 0xFE, 0xFE, 0xED };
 
 
-const char* ssid     = "Jeune bogoss";
-const char* password = "ccomment";
+
+
+
+
 int state_s1 = 0;
 float hMemory;
 float tMemory;
-
-IPAddress server(192,168,150,72);
-
-void callback(char* topic, byte* payload, unsigned int length) {
-  Serial.print("Message arrived [");
-  Serial.print(topic);
-  Serial.print("] ");
-  for (int i=0;i<length;i++) {
-    Serial.print((char)payload[i]);
-  }
-  Serial.println();
-}
-
-WiFiClient wifiClient;
-PubSubClient client(wifiClient);
 
 void SM_s1() {
   //Almost every state needs these lines, so I'll put it outside the State Machine
@@ -71,47 +51,27 @@ void SM_s1() {
       // Check if any reads failed and exit early (to try again).
       if (isnan(h) || isnan(t) || isnan(f)) {
         Serial.println(F("Failed to read from DHT sensor!"));  
-      return;
+        return;
       }
-      // Compute heat index in Fahrenheit (the default)
-  float hif = dht.computeHeatIndex(f, h);
-  // Compute heat index in Celsius (isFahreheit = false)
-  float hic = dht.computeHeatIndex(t, h, false);
-
-  Serial.print(F("Humidity: "));
-  Serial.print(h);
-  Serial.print(F("%  Temperature: "));
-  Serial.print(t);
-  Serial.print(F("C "));
-  Serial.print(f);
-  Serial.print(F("F  Heat index: "));
-  Serial.print(hic);
-  Serial.print(F("C "));
-  Serial.print(hif);
-  Serial.println(F("F"));
- }
-}
-
-void reconnect() {
-  // Loop until we're reconnected
-  while (!client.connected()) {
-    Serial.print("Attempting MQTT connection...");
-    // Attempt to connect
-    if (client.connect("ESP32Client")) {
-      Serial.println("connected");
-      // Once connected, publish an announcement...
-      client.publish("ESP32","Connected");
-      // ... and resubscribe
-      client.subscribe("inTopic");
-    } else {
-      Serial.print("failed, rc=");
-      Serial.print(client.state());
-      Serial.println(" try again in 5 seconds");
-      // Wait 5 seconds before retrying
-      delay(5000);
+      float hif = dht.computeHeatIndex(f, h);
+      // Compute heat index in Celsius (isFahreheit = false)
+      float hic = dht.computeHeatIndex(t, h, false);
+      Serial.print(F("Humidity: "));
+      Serial.print(h);
+      Serial.print(F("%  Temperature: "));
+      Serial.print(t);
+      Serial.print(F("C "));
+      Serial.print(f);
+      Serial.print(F("F  Heat index: "));
+      Serial.print(hic);
+      Serial.print(F("C "));
+      Serial.print(hif);
+      Serial.println(F("F"));
+      
+      break;            
     }
   }
-}
+
 
 void setup()
 {    
@@ -120,17 +80,6 @@ void setup()
     Serial.println(F("DHTxx test!"));
     dht.begin();
     Serial.begin(115200);
-  
-
-  client.setServer(server, 1883);
-  client.setCallback(callback);
-  // Allow the hardware to sort itself out
-  delay(1500);
-
-  if(Ping.ping(server)){
-    Serial.println("Ping successful!!");
-    delay(600);
-  }
 }
 
 
