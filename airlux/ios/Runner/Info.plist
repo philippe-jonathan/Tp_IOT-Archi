@@ -47,16 +47,5 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
-
-	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>Besoin d'une autorisation d'accès au Bleutooth</string>
-	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>Besoin d'une autorisation d'accès au Bleutooth</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Besoin d'une autorisation d'accès à la Localisation</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Besoin d'une autorisation d'accès à la Localisation</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Besoin d'une autorisation d'accès à la Localisation</string>
 </dict>
 </plist>
