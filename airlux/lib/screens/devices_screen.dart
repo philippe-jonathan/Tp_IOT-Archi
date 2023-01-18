@@ -13,23 +13,26 @@ class DevicesScreen extends StatefulWidget {
 class _DevicesScreenState extends State<DevicesScreen> {
   // Variables
   FlutterBlue flutterBlue = FlutterBlue.instance;
-  List<String> devices = [];
+  List<BluetoothDevice> devices = [];
+  bool isConnected = false;
 
-  // Fonctions
+  // Functions
   void startScan() {
+    devices.clear();
+
     // Start scanning
-    flutterBlue.startScan(timeout: const Duration(seconds: 4));
+    flutterBlue.startScan(timeout: const Duration(seconds: 2));
 
     // Listen to scan results
-    var subscription = flutterBlue.scanResults.listen((results) {
+    flutterBlue.scanResults.listen((results) {
       // do something with scan results
       for (ScanResult r in results) {
-        if (r.device.name.isNotEmpty) {
+        if (r.device.name.isNotEmpty && !devices.contains(r.device)) {
           setState(() {
-            devices.add('${r.device.name} | rssi: ${r.rssi}');
+            devices.add(r.device);
           });
         }
-        print('${r.device.name} found! rssi: ${r.rssi}');
+        // print('${r.device.name} found! rssi: ${r.rssi} | ${r.device.id}');
       }
     });
 
@@ -38,7 +41,36 @@ class _DevicesScreenState extends State<DevicesScreen> {
   }
 
   void connect(device) async {
+    print('Test connect');
     await device.connect();
+    setState(() {
+      isConnected = true;
+    });
+    await device.discoverServices();
+
+    // var characteristics = service.characteristics;
+    // List<BluetoothService> services = await device.discoverServices();
+    // services.forEach((service) async {
+    // do something with service
+    // var characteristics = service.characteristics;
+    // for (BluetoothCharacteristic c in characteristics) {
+    //   List<int> value = await c.read();
+    //   print(value);
+    //   var descriptors = c.descriptors;
+    //   for (BluetoothDescriptor d in descriptors) {
+    //   List<int> value = await d.read();
+    //   print(value);
+    //   }
+    //   }
+    // });
+  }
+
+  void disconnect(device) async {
+    print('Test disconnect');
+    await device.disconnect();
+    setState(() {
+      isConnected = false;
+    });
   }
 
   @override
@@ -54,12 +86,19 @@ class _DevicesScreenState extends State<DevicesScreen> {
         // ),
         itemBuilder: (context, index) {
           return ListTile(
-            title: Text(devices[index]),
+            title: Text(
+                '${devices[index].name} | ${devices[index].state.isBroadcast}'),
             trailing: ElevatedButton(
                 onPressed: () {
-                  connect(devices[index]);
+                  if (isConnected == false) {
+                    connect(devices[index]);
+                  } else {
+                    disconnect(devices[index]);
+                  }
                 },
-                child: Text('Connecter')),
+                child: isConnected == false
+                    ? Text('Connecter')
+                    : Text('Déconnecter')),
           );
         },
       ),
