@@ -16,6 +16,8 @@ services:
         interval: 2s
         timeout: 2s
         retries: 10
+    networks:
+      - iotnetwork
 
 
   localapp:
@@ -36,6 +38,8 @@ services:
       - ./../localapp/:/usr/app/
       - localapp-data:/usr/app/
       - localapp-data:/usr/app/node_modules
+    networks:
+      - iotnetwork
 
 
   broker:
@@ -49,6 +53,8 @@ services:
     ports:
       - 1883:1883
       - 9001:9001
+    networks:
+      - iotnetwork
 
   
   pulsor1:
@@ -64,6 +70,8 @@ services:
     volumes:
       - pulsor1-data:/usr/app/
       - pulsor1-data:/usr/app/node_modules
+    networks:
+      - iotnetwork
   
   pulsor2:
     build: 
@@ -78,6 +86,8 @@ services:
     volumes:
       - pulsor2-data:/usr/app/
       - pulsor2-data:/usr/app/node_modules
+    networks:
+      - iotnetwork
       
 
   
@@ -94,6 +104,8 @@ services:
     volumes:
       - pulsor3-data:/usr/app/
       - pulsor3-data:/usr/app/node_modules
+    networks:
+      - iotnetwork
 
   
   dbcloud:
@@ -105,8 +117,8 @@ services:
       dockerfile: docker/dockerfile-dbcloud
     healthcheck:
         test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-        interval: 2s
-        timeout: 2s
+        interval: 3s
+        timeout: 4s
         retries: 10
     ports:
       - "3306:3306"
@@ -121,28 +133,31 @@ services:
       MYSQL_ROOT_PASSWORD: 'password'
     volumes:
       - dbcloud-data:/var/lib/mysql
+    networks:
+      - iotnetwork
   
   syncapi:
     tty: true
-    image: bitnami/laravel
     container_name: syncapi
     build: 
       context: ./..
       dockerfile: docker/dockerfile-syncapp
-    working_dir: /var/www/
     ports:
       - "80:80"
       - "6001:6001"
     extra_hosts:
         host.docker.internal: host-gateway
     depends_on:
-      dbcloud:
-        condition: service_healthy
+      - dbcloud
     environment:
       MYSQL_HOST: 'dbcloud'
       MYSQL_DATABASE: 'AirLuxDB'
     volumes:
-      - syncapp-data:/var/www
+      - ./../syncapi/:/usr/app/
+      - syncapi-data:/usr/app/
+      - syncapi-data:/usr/app/node_modules
+    networks:
+      - iotnetwork
 
   dbstats:
     image: quay.io/prometheus/prometheus:latest
@@ -157,6 +172,8 @@ services:
       - 9090:9090
     links:
       - mysqld-exporter
+    networks:
+      - iotnetwork
       
   statsapp:
     image: grafana/grafana:latest
@@ -172,6 +189,8 @@ services:
       - dbstats
     depends_on:
       - dbstats
+    networks:
+      - iotnetwork
       
   mysqld-exporter:
     image: quay.io/prometheus/mysqld-exporter
@@ -186,13 +205,19 @@ services:
       - dbcloud
     depends_on:
       - dbcloud
+    networks:
+      - iotnetwork
+      
+      
+networks:
+  iotnetwork:
       
       
 # Names our volume
 volumes:
   dbcloud-data:
   dblocal-data:
-  syncapp-data:
+  syncapi-data:
   broker-data:
   localapp-data:
   pulsor1-data:

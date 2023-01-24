@@ -11,5 +11,5 @@ client.on("connect", function(){
         console.log(random);
         client.publish('home/captor/temp', process.env.PULSOR_ID + "//" + random.toString())
         
-    }, 1000), 30000;
+    }, 3000), 30000;
 });

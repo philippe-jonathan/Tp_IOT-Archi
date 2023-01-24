@@ -13,4 +13,4 @@ COPY /localapp/. .
 
 #EXPOSE 8080
 
-CMD [ "node", "mqtt/sub.js" ]
+CMD [ "node", "index.js" ]

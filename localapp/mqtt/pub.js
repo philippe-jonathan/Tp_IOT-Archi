@@ -13,3 +13,5 @@ client.on("connect", function(){
         
     }, 1000), 30000;
 });
+
+module.exports = client;

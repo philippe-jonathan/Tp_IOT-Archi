@@ -1,45 +1,16 @@
+FROM node:18
 
-FROM php:7.4.1-apache
 
-# Arguments defined in docker-compose.yml (not really bruh)
-ARG user
-ARG uid
+COPY /syncapi/package*.json ./
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip
+RUN mkdir -p /home/syncapi
+WORKDIR /home/syncapi/
 
-#RUN printf "\n \n" | pecl install redis && docker-php-ext-enable redis
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN npm install --silent
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+# Bundle app source
+COPY /syncapi/. .
 
-# Get latest Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+EXPOSE 6001
 
-# Create system user to run Composer and Artisan Commands
-RUN useradd -G www-data,root -u 1000 -d /home/user user
-RUN mkdir -p /home/user/.composer \ 
-    && chown -R user:user /home/user
-
-WORKDIR /var/www
-COPY syncapi/ /var/www/
-COPY syncapi/.env.example /var/www/.env
-COPY syncapi/vhost.conf /etc/apache2/sites-available/000-default.conf
-
-# Run necessary services
-RUN chmod u+x set_up_api.sh \
-    && chmod u+x start_websocket.sh \
-    && chown -R www-data:www-data /var/www \
-    && a2enmod rewrite
-RUN ["/bin/bash", "/var/www/set_up_api.sh"]
-
-CMD ["/bin/bash", "/var/www/start_websocket.sh"]
+CMD [ "node", "index.js" ]
