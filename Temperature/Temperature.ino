@@ -1,107 +1,128 @@
-#include "DHT.h"
 #include "BluetoothSerial.h"
+#include <WiFi.h>
+#include <PubSubClient.h>
+#include <ESP32Ping.h>
 
-#define DHTPIN 14
-#define DHTTYPE DHT11
+
 #if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
 #error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
 #endif
 
-BluetoothSerial SerialBT;
-DHT dht(DHTPIN, DHTTYPE);
-int state_s1 = 0;
-float hMemory;
-float tMemory;
+BluetoothSerial* SerialBT=NULL;
+int state_wifi =-1;
 const int buttonPin = 16;
-int buttonState = HIGH;
-int prev_state = buttonState;
-int current_state = buttonState;
+
+byte mac[]    = {  0xDE, 0xED, 0xBA, 0xFE, 0xFE, 0xED };
+const char * ssid;
+const char * password;
+
+WiFiClient wifiClient;
+PubSubClient client(wifiClient);
+
+
+
+
 
 void SM_s1_bluetooth() {
-    // put your main code here, to run repeatedly:
-  buttonState = digitalRead(buttonPin);
-  current_state = buttonState;
+  if(digitalRead(buttonPin)==LOW && state_wifi==-1){
+    SerialBT->begin(F("aaaaaaaa")); //Bluetooth device name
+    Serial.println(F("The device started, now you can pair it with bluetooth!"));
+    state_wifi =0;
+  }
   
-  switch (current_state) {
-    case HIGH:
-      if (prev_state == LOW){
-        prev_state = HIGH;
-        SerialBT.end(); //On desactive le bluetooth
-        Serial.println("The device end, now you can't pair it with bluetooth!");
+  switch (state_wifi) {
+    case 0:
+      if(SerialBT->available()){
+        SerialBT->println(F("resseignez le nom de votre wifi"));
+        state_wifi = 1;
       }
       break;
-    case LOW:
-      if (prev_state == HIGH){
-        prev_state = LOW;
-        SerialBT.begin("OnEstLa"); //Bluetooth device name
-        Serial.println("The device started, now you can pair it with bluetooth!");
+    case 1:
+      if(SerialBT->readString()!=""){
+        ssid= SerialBT->readString().c_str();     
+        state_wifi=2;
+      }
+      break;
+    case 2:
+        SerialBT->println(F("resseignez le mot de passe wifi de votre wifi"));
+        state_wifi=3;
+      break;
+    case 3 :
+      if (SerialBT->readString()!="") {
+        password = SerialBT->readString().c_str();
+        // We start by connecting to a WiFi network
+        Serial.print(F("Connecting to "));
+        Serial.println(ssid);
+        WiFi.begin(ssid, password);
+        while (WiFi.status() != WL_CONNECTED) {
+          delay(500);
+          Serial.print(".");
+        }
+        Serial.println(F("WiFi connected, IP address: "));
+        Serial.println(WiFi.localIP());
+        IPAddress server(192,168,150,72);
+        if(Ping.ping(server)){
+          Serial.println(F("Ping successful!!"));
+        }
+        client.setServer(server, 1883);
+        state_wifi=4;
+      }
+      break;
+    case 4 :
+      if (!client.connected()) {
+        
+          Serial.print(F("Attempting MQTT connection..."));
+          // Attempt to connect
+          if (client.connect("ESP32Client")) {
+            Serial.println(F("connected"));
+            // Once connected, publish an announcement...
+            client.publish("ESP32","Connected");
+            // ... and resubscribe
+            client.subscribe("inTopic");
+          } else {
+            Serial.print(F("failed, rc="));
+            Serial.print(client.state());
+            state_wifi = 4;
+          
+            // Wait 5 seconds before retrying
+          
+        }
+      }
+      else{
+        if(digitalRead(buttonPin)==LOW)
+        client.publish("ESP32","boutton appuyé");
       }
       break;
     default:
-      break;
+      break;      
   }
+  //Serial.println(String(state_wifi));
   if (Serial.available()) {
-    SerialBT.println(Serial.readString());
+  SerialBT->println(Serial.readString());
   }
-  if (SerialBT.available()) {
-    Serial.write(SerialBT.read());
+  if (SerialBT->available()) {
+    Serial.println(SerialBT->readString());
   }
 }
 
-void SM_s1_temperature() {
-  //Almost every state needs these lines, so I'll put it outside the State Machine
-  float h = dht.readHumidity();
-  // Read temperature as Celsius (the default)
-  float t = dht.readTemperature();
-
-  //State Machine Section
-  switch (state_s1) {
-    case 0: //RESET!
-      //Catch all "home base" for the State MAchine
-      state_s1 = 1;
-    break;
-
-    case 1: //WAIT
-      //Wait for the temperature or humidity to change
-      if (tMemory != t || hMemory != h) {state_s1 = 2;}
-    break;
-    case 2: //Mesure Temperature & humidity
-      // Read humidity %
-      float h = dht.readHumidity();
-      // Read temperature as Celsius (the default)
-      float t = dht.readTemperature();
-      tMemory=t;
-      hMemory=h;
-      // Check if any reads failed and exit early (to try again).
-      if (isnan(h) || isnan(t)) {
-        Serial.println(F("Failed to read from DHT sensor!"));  
-        return;
-      }
-      // Compute heat index in Celsius (isFahreheit = false)
-      float hic = dht.computeHeatIndex(t, h, false);
-      Serial.print(F("Humidity: "));
-      Serial.print(h);
-      Serial.print(F("%  Temperature: "));
-      Serial.print(t);
-      Serial.print(F("C "));
-      Serial.print(F(" Heat index: "));
-      Serial.print(hic);
-      Serial.println(F("C "));
-      state_s1 = 1;
-      break;            
+void callback(char* topic, byte* payload, unsigned int length) {
+  Serial.print(F("Message arrived ["));
+  Serial.print(topic);
+  Serial.print(F("] "));
+  for (int i=0;i<length;i++) {
+    Serial.print((char)payload[i]);
   }
 }
 
 void setup()
 {    
+    SerialBT = new BluetoothSerial;
     Serial.begin(115200);
+    //client.setCallback(callback);
     pinMode(buttonPin, INPUT_PULLUP);
-    Serial.println(F("DHTxx test!"));
-    dht.begin();
 }
 
 void loop()
 {
   SM_s1_bluetooth();
-  SM_s1_temperature();
 }
