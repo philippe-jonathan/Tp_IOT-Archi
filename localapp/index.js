@@ -9,28 +9,24 @@ mqttSub.on('message', function(topic, message){
     
     if(ws.client.readyState === ws.client.OPEN)
         {
-            console.log("WEBSOCKET SERVER IS RUNNING");
-            console.log("MQTT MESSAGE SEND TO SYNCAPI");
-            ws.client.send(message.toString());
+            console.log("WEBSOCKET SERVER IS RUNNING - MQTT MESSAGE SEND TO SYNCAPI");
+            ws.client.send("tocloud//captors//insert//{"+message.toString()+"}//apply");
         }
         else if(ws.client.readyState === ws.client.CONNECTING)
         {
-            console.log("WEBSOCKET SERVER IS CONNECTING");
-            console.log("MQTT MESSAGE SEND TO REDIS DB");
+            console.log("WEBSOCKET SERVER IS CONNECTING - MQTT MESSAGE SEND TO REDIS DB");
             let data = message.toString().split('//');
             redis.postCaptorValue(data[0], data[1]);
         }
         else if(ws.client.readyState === ws.client.CLOSING)
         {
-            console.log("WEBSOCKET SERVER IS CLOSING");
-            console.log("MQTT MESSAGE SEND TO REDIS DB");
+            console.log("WEBSOCKET SERVER IS CLOSING - MQTT MESSAGE SEND TO REDIS DB");
             let data = message.toString().split('//');
             redis.postCaptorValue(data[0], data[1]);
         }
         else
         {
-            console.log("WEBSOCKET SERVER IS CLOSED");
-            console.log("MQTT MESSAGE SEND TO REDIS DB");
+            console.log("WEBSOCKET SERVER IS CLOSED - MQTT MESSAGE SEND TO REDIS DB");
             let data = message.toString().split('//');
             redis.postCaptorValue(data[0], data[1]);
 

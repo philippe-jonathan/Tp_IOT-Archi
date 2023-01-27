@@ -8,6 +8,7 @@
   "author": "bogoss",
   "license": "ISC",
   "dependencies": {
+    "@edium/fsm": "^2.1.4",
     "mysql2": "^3.0.1",
     "ws": "^8.12.0"
   },

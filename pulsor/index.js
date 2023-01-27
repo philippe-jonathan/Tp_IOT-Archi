@@ -1,4 +1,5 @@
 const mqtt = require("mqtt");
+const crypto = require('crypto');
 var client = mqtt.connect('mqtt://broker');
 
 function getRandomTemp(min, max) {
@@ -7,9 +8,11 @@ function getRandomTemp(min, max) {
 
 client.on("connect", function(){
     setInterval(function(){
-        var random = getRandomTemp(15, 30);
-        console.log(random);
-        client.publish('home/captor/temp', process.env.PULSOR_ID + "//" + random.toString())
+        var value = getRandomTemp(15, 30);
+        let roomId = crypto.randomBytes(11).toString('hex');
+        let name = "captor_name"
+        console.log(value);
+        client.publish('home/captor', process.env.PULSOR_ID + "," + name + "," + roomId + "," + value.toString())
         
     }, 3000), 30000;
 });
