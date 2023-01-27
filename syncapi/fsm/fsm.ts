@@ -1,17 +1,21 @@
-import { CaptorController } from "./../mysql/CaptorController";
-import { BuildingController } from "../mysql/BuildingController";
 import { UserController } from "./../mysql/UserController";
 import { DeviceController } from "./../mysql/DeviceController";
+import { BuildingController } from "../mysql/BuildingController";
 import { RoomController } from "./../mysql/RoomController";
-import { StateMachine } from "@edium/fsm";
+import { CaptorController } from "./../mysql/CaptorController";
 
-class FSM {
+import { StateMachine } from "@edium/fsm";
+import { Controller } from "../mysql/Controller";
+
+export class FSM {
     context: string[];
+    controllers: Controller[];
     constructor(context) {
       console.log(`FSM : constructor : context str = ${context}`);
       if(typeof context === 'string' || context instanceof String)
         this.context = context.split('//');
       console.log(`FSM : constructor : context = ${this.context}`);
+      this.controllers = [new UserController(), new DeviceController(), new BuildingController(), new RoomController(), new CaptorController()]
     };
 
 
@@ -163,10 +167,3 @@ class FSM {
     
     }
 }
-
-
-  
-
-module.exports = {
-    FSM: FSM
-  };

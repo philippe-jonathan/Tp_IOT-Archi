@@ -1,5 +1,5 @@
-const WebSocket = require('ws');
-const FSM = require('./fsm/fsm');
+import { WebSocket } from "ws";
+import { FSM } from "./fsm/fsm";
 
 
 function rawDataToString(data) {
@@ -18,7 +18,7 @@ wss.on('connection', (ws) => {
 
     ws.on('message', (message) => {
         console.log(`Received message: ${message}`);
-        let fsm = new FSM.FSM(rawDataToString(message));
+        let fsm = new FSM(rawDataToString(message));
         fsm.startFsm();
     });
 
