@@ -12,5 +12,8 @@
     "mysql2": "^3.0.1",
     "ws": "^8.12.0"
   },
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "typescript": "^4.9.4"
+  }
 }

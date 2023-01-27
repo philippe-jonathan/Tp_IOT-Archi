@@ -1,9 +1,4 @@
 const WebSocket = require('ws');
-const captors = require('./mysql/captorController');
-const buildings = require('./mysql/buildingController');
-const users = require('./mysql/userController');
-const rooms = require('./mysql/roomController');
-const devices = require('./mysql/deviceController');
 const FSM = require('./fsm/fsm');
 //const crypto = require('crypto');
 
