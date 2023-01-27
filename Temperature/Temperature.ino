@@ -15,6 +15,7 @@ const int buttonPin = 16;
 byte mac[]    = {  0xDE, 0xED, 0xBA, 0xFE, 0xFE, 0xED };
 const char * ssid;
 const char * password;
+bool passwordInput=false;
 
 WiFiClient wifiClient;
 PubSubClient client(wifiClient);
@@ -38,36 +39,72 @@ void SM_s1_bluetooth() {
       }
       break;
     case 1:
-      if(SerialBT->readString()!=""){
-        ssid= SerialBT->readString().c_str();     
-        state_wifi=2;
-      }
-      break;
+      {
+        String inputSsid=SerialBT->readString();
+        if(inputSsid!=""){
+          Serial.println(inputSsid);
+          inputSsid.remove(inputSsid.length()-2, 2);    
+          ssid= inputSsid.c_str();
+          SerialBT->println(F("resseignez le mot de passe wifi de votre wifi"));
+          while(!passwordInput){
+            String inputPassword=SerialBT->readString();
+            if(inputPassword!=""){
+              passwordInput=true;
+              inputPassword.remove(inputPassword.length()-2, 2);
+              password=inputPassword.c_str();
+              Serial.print(F("Connecting to"));
+              Serial.print(ssid);
+              Serial.print(password);              
+              WiFi.begin(ssid, password);
+              while (WiFi.status() != WL_CONNECTED) {
+                delay(500);
+                Serial.print(".");
+              }
+              Serial.println(F("WiFi connected, IP address: "));
+              Serial.println(WiFi.localIP());
+              IPAddress server(192,168,150,72);
+              if(Ping.ping(server)){
+                Serial.println(F("Ping successful!!"));
+              }
+              client.setServer(server, 1883);
+            }            
+          }
+          Serial.println(ssid);  
+          state_wifi=4;
+        }
+        break;
+      }      
     case 2:
-        SerialBT->println(F("resseignez le mot de passe wifi de votre wifi"));
+        Serial.println(ssid);       
+        
+        Serial.println(ssid);
         state_wifi=3;
       break;
     case 3 :
-      if (SerialBT->readString()!="") {
-        password = SerialBT->readString().c_str();
-        // We start by connecting to a WiFi network
-        Serial.print(F("Connecting to "));
-        Serial.println(ssid);
-        WiFi.begin(ssid, password);
-        while (WiFi.status() != WL_CONNECTED) {
-          delay(500);
-          Serial.print(".");
+      {       
+        String input=SerialBT->readString();
+        if(input!=""){
+          password = input.c_str();
+          // We start by connecting to a WiFi network
+          Serial.print(F("Connecting to "));
+          Serial.println(ssid);
+          Serial.println(password);
+          WiFi.begin(ssid, password);
+          while (WiFi.status() != WL_CONNECTED) {
+            delay(500);
+            Serial.print(".");
+          }
+          Serial.println(F("WiFi connected, IP address: "));
+          Serial.println(WiFi.localIP());
+          IPAddress server(192,168,150,72);
+          if(Ping.ping(server)){
+            Serial.println(F("Ping successful!!"));
+          }
+          client.setServer(server, 1883);
+          state_wifi=4;
         }
-        Serial.println(F("WiFi connected, IP address: "));
-        Serial.println(WiFi.localIP());
-        IPAddress server(192,168,150,72);
-        if(Ping.ping(server)){
-          Serial.println(F("Ping successful!!"));
-        }
-        client.setServer(server, 1883);
-        state_wifi=4;
-      }
-      break;
+        break;
+      }         
     case 4 :
       if (!client.connected()) {
         
@@ -98,10 +135,12 @@ void SM_s1_bluetooth() {
   }
   //Serial.println(String(state_wifi));
   if (Serial.available()) {
-  SerialBT->println(Serial.readString());
+  SerialBT->print(Serial.readString());
   }
   if (SerialBT->available()) {
-    Serial.println(SerialBT->readString());
+    String input=SerialBT->readString();
+    Serial.print(input);
+    Serial.print(input.length());
   }
 }
 
