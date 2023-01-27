@@ -1,6 +1,5 @@
 const WebSocket = require('ws');
 const FSM = require('./fsm/fsm');
-//const crypto = require('crypto');
 
 
 function rawDataToString(data) {
@@ -19,18 +18,6 @@ wss.on('connection', (ws) => {
 
     ws.on('message', (message) => {
         console.log(`Received message: ${message}`);
-        // let randomCaptor = crypto.randomBytes(11).toString('hex');
-        // let randomBuilding = crypto.randomBytes(11).toString('hex');
-        // let randomRoom = crypto.randomBytes(11).toString('hex');
-        // let randomUser = crypto.randomBytes(11).toString('hex');
-        // let randomDevice = crypto.randomBytes(11).toString('hex');
-        
-        // captors.insert(randomCaptor,"le beau capteur","4456","21");
-        // buildings.insert(randomBuilding,"le beau building","la maison mère", randomUser);
-        // rooms.insert(randomRoom,"le beau room",randomBuilding);
-        // users.insert(randomUser,"le beau user", "bogoss@gmail.com", "password");
-        // devices.insert(randomDevice,"9849841-984-4165-51561");
-
         let fsm = new FSM.FSM(rawDataToString(message));
         fsm.startFsm();
     });

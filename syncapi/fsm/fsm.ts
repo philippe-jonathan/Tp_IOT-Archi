@@ -1,11 +1,16 @@
-const { State, StateMachine } = require('@edium/fsm');
+import { CaptorController } from "./../mysql/CaptorController";
+import { BuildingController } from "../mysql/BuildingController";
+import { UserController } from "./../mysql/UserController";
+import { DeviceController } from "./../mysql/DeviceController";
+import { RoomController } from "./../mysql/RoomController";
+import { StateMachine } from "@edium/fsm";
 
 class FSM {
+    context: string[];
     constructor(context) {
       console.log(`FSM : constructor : context str = ${context}`);
       if(typeof context === 'string' || context instanceof String)
         this.context = context.split('//');
-      else this.context = null;
       console.log(`FSM : constructor : context = ${this.context}`);
     };
 
