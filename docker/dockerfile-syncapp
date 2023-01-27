@@ -1,0 +1,16 @@
+FROM node:18
+
+
+COPY /syncapi/package*.json ./
+
+RUN mkdir -p /home/syncapi
+WORKDIR /home/syncapi/
+
+RUN npm install --silent
+
+# Bundle app source
+COPY /syncapi/. .
+
+EXPOSE 6001
+
+CMD [ "node", "index.js" ]
