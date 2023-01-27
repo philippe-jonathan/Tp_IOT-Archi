@@ -36,7 +36,8 @@ wss.on('connection', (ws) => {
         // users.insert(randomUser,"le beau user", "bogoss@gmail.com", "password");
         // devices.insert(randomDevice,"9849841-984-4165-51561");
 
-        FSM.startFsm(rawDataToString(message));
+        let fsm = new FSM.FSM(rawDataToString(message));
+        fsm.startFsm();
     });
 
     ws.send('Welcome to the server!');
