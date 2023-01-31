@@ -4,10 +4,9 @@ const ws = require("../websocket/websocket");
 
 
 var client = mqtt.connect('mqtt://broker');
-var online = true;
 
 client.on('connect', function(){
-    client.subscribe("home/captor");
+    client.subscribe("home/captor/update");
     console.log("Client has subscribe successfully");
 });
 

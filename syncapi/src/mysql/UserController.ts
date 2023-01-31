@@ -27,6 +27,7 @@ export class UserController implements Controller
       if (err) throw err;
       console.log(result);
     });
+    connection.release();
   })
   }
 
@@ -50,6 +51,7 @@ export class UserController implements Controller
       if (err) throw err;
       console.log('users deleted successfully');
     });
+    connection.release();
   })
   }
   
@@ -74,6 +76,7 @@ export class UserController implements Controller
     if (err) console.log(err);
     else console.log('User added successfully');
   });
+  connection.release();
   })
   }
   
@@ -98,6 +101,7 @@ export class UserController implements Controller
         if (err) throw err;
         console.log('User updated successfully');
       });
+      connection.release();
     })
   }
   // Function to delete data from the users table
@@ -120,6 +124,7 @@ export class UserController implements Controller
         if (err) throw err;
         console.log('User deleted successfully');
       });
+      connection.release();
     })
   }
 }

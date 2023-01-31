@@ -25,6 +25,7 @@ export class DeviceController implements Controller
       if (err) throw err;
       console.log(result);
     });
+    connection.release();
   })
   }
 
@@ -48,6 +49,7 @@ export class DeviceController implements Controller
       if (err) throw err;
       console.log('devices deleted successfully');
     });
+    connection.release();
   })
   }
   
@@ -72,6 +74,7 @@ connection.execute(sql, data, function(err, result) {
   if (err) console.log(err);
   else console.log('Device added successfully');
 });
+connection.release();
 })
 }
 
@@ -96,6 +99,7 @@ update(json: string) {
     if (err) throw err;
     console.log('Device updated successfully');
   });
+    connection.release();
 })
 }
 // Function to delete data from the devices table
@@ -118,6 +122,7 @@ remove(id: string) {
     if (err) throw err;
     console.log('Device deleted successfully');
   });
+  connection.release();
 })
 }
 

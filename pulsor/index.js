@@ -12,7 +12,6 @@ client.on("connect", function(){
         let roomId = crypto.randomBytes(11).toString('hex');
         let name = "captor_name"
         console.log(value);
-        client.publish('home/captor', process.env.PULSOR_ID + "," + name + "," + roomId + "," + value.toString())
-        
+        client.publish('home/captor/update', `{"id":"${process.env.PULSOR_ID}", "name": "${name}", "room_id": "${roomId}", "value": "${value.toString()}"}`)
     }, 3000), 30000;
 });

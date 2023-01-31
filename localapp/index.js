@@ -10,7 +10,7 @@ mqttSub.on('message', function(topic, message){
     if(ws.client.readyState === ws.client.OPEN)
         {
             console.log("WEBSOCKET SERVER IS RUNNING - MQTT MESSAGE SEND TO SYNCAPI");
-            ws.client.send("tocloud//captors//insert//{"+message.toString()+"}//apply");
+            ws.client.send("tocloud//captors//"+message.toString()+"//update");
         }
         else if(ws.client.readyState === ws.client.CONNECTING)
         {

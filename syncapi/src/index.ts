@@ -1,8 +1,8 @@
-import { WebSocket } from "ws";
+import { RawData, WebSocket } from "ws";
 import { FSM } from "./fsm/fsm";
 
 
-function rawDataToString(data) {
+function rawDataToString(data: RawData) {
     // console.log(typeof data);
     // if (typeof data === 'WebSocket.RawData') {
         return data.toString('utf8');
@@ -19,8 +19,16 @@ wss.on('connection', (ws) => {
     ws.on('message', (message) => {
         console.log(`Received message: ${message}`);
         let fsm = new FSM(rawDataToString(message));
-        fsm.startFsm();
+        fsm.startFsm(); 
     });
 
     ws.send('Welcome to the server!');
 });
+
+let id = 9445166;
+var value = 15.4;
+let roomId = 4895623;
+let name = "captor_name"
+let data = `{"id":"${id}", "name": "${name}", "room_id": "${roomId}", "value": "${value.toString()}"}`;
+let fsm = new FSM("tocloud//captors//"+data+"//update");
+fsm.startFsm();

@@ -26,6 +26,7 @@ export class BuildingController implements Controller
       if (err) throw err;
       console.log(result);
     });
+    connection.release();
   })
   }
 
@@ -49,6 +50,7 @@ export class BuildingController implements Controller
       if (err) throw err;
       console.log('building deleted successfully');
     });
+    connection.release();
   })
   }
   // Function to insert data into the buildings table
@@ -80,6 +82,7 @@ export class BuildingController implements Controller
       if (err) console.log(err);
       else console.log('Building added successfully');
     });
+    connection.release();
   })
   }
   
@@ -104,6 +107,7 @@ export class BuildingController implements Controller
       if (err) throw err;
       console.log('building updated successfully');
     });
+    connection.release();
   })
   }
   
@@ -127,6 +131,7 @@ export class BuildingController implements Controller
       if (err) throw err;
       console.log('building deleted successfully');
     });
+    connection.release();
   })
   }
 }
