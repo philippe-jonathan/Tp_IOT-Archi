@@ -179,9 +179,11 @@ services:
     image: grafana/grafana:latest
     container_name: statsapp
     environment:
+      - GRAFANA_MYSQL_PASSWORD=password
       - GF_SECURITY_ADMIN_PASSWORD=secret
       - GF_ALERTING_EXECUTE_ALERTS=false
     volumes:
+      - ./../statsapp/datasources/:/usr/share/grafana/conf/provisioning/datasources/
       - statsapp_data:/var/lib/grafana
     ports:
       - 3000:3000

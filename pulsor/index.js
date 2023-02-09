@@ -9,9 +9,7 @@ function getRandomTemp(min, max) {
 client.on("connect", function(){
     setInterval(function(){
         var value = getRandomTemp(15, 30);
-        let roomId = crypto.randomBytes(11).toString('hex');
-        let name = "captor_name"
         console.log(value);
-        client.publish('home/captor/update', `{"id":"${process.env.PULSOR_ID}", "name": "${name}", "room_id": "${roomId}", "value": "${value.toString()}"}`)
+        client.publish('home/captor_values/create', `"captor_id":"${process.env.PULSOR_ID}", "value": "${value.toString()}"`)
     }, 3000), 30000;
 });

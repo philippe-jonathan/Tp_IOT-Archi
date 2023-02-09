@@ -6,11 +6,13 @@ const mqttPub = require("./mqtt/pub");
 
 mqttSub.on('message', function(topic, message){
     console.log("MQTT MESSAGE RECEIVED : " + message.toString());
+
+    var currentTimestamp = new Date().getTime();
     
     if(ws.client.readyState === ws.client.OPEN)
         {
             console.log("WEBSOCKET SERVER IS RUNNING - MQTT MESSAGE SEND TO SYNCAPI");
-            ws.client.send("tocloud//captors//"+message.toString()+"//update");
+            ws.client.send(`tocloud//captor_values//{${message.toString()}, "created_at": "${currentTimestamp}"}//insert`);
         }
         else if(ws.client.readyState === ws.client.CONNECTING)
         {

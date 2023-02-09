@@ -3,10 +3,10 @@ import { DeviceController } from "../mysql/DeviceController";
 import { BuildingController } from "../mysql/BuildingController";
 import { RoomController } from "../mysql/RoomController";
 import { CaptorController } from "../mysql/CaptorController";
+import { CaptorValueController } from "../mysql/CaptorValueController";
 
 import { State, StateMachine } from "@edium/fsm";
 import { Controller } from "../mysql/Controller";
-import Pool from "mysql2/typings/mysql/lib/Pool";
 
 class Context{
     actions: string[];
@@ -18,6 +18,7 @@ class Context{
     buildings: BuildingController;
     rooms: RoomController;
     captors: CaptorController;
+    captorValues: CaptorValueController;
 
     constructor(actions: string[]) {
         this.actions = actions;
@@ -26,6 +27,7 @@ class Context{
         this.buildings = new BuildingController();
         this.rooms = new RoomController();
         this.captors = new CaptorController();
+        this.captorValues = new CaptorValueController();
         console.log(`Controllers : constructor, users = ${this.users}, devices = ${this.devices}`);
     };
 }
@@ -34,10 +36,15 @@ export class FSM {
     context: Context;
 
 
-    constructor(message: string) {
-        this.context = new Context(message.split('//'));
-        console.log(`FSM : constructor : context = ${this.context}`);
+    constructor() {
+        this.context = new Context([""]);
+        //this.context = new Context(message.split('//'));
+        //console.log(`FSM : constructor : context = ${this.context}`);
     };
+
+    setContext(message: string){
+        this.context = new Context(message.split('//'));
+    }
 
 
     exitAction = ( state : State, context: string[] ) => {
@@ -65,6 +72,7 @@ export class FSM {
             case "buildings": context.currentController = context.buildings;  state.trigger( "buildings" ); break;
             case "rooms": context.currentController = context.rooms;  state.trigger( "rooms" ); break;
             case "captors": context.currentController = context.captors;  state.trigger( "captors" ); break;
+            case "captor_values": context.currentController = context.captorValues;  state.trigger( "captor_values" ); break;
             default: break;
         }
         console.log(`FSM : action = table, controller = ${context.currentController}`);
@@ -118,6 +126,7 @@ export class FSM {
         const buildingsState = stateMachine.createState( "Buildings state", false, this.parseDataAction);
         const roomsState = stateMachine.createState( "Rooms state", false, this.parseDataAction);
         const captorsState = stateMachine.createState( "Captors state", false, this.parseDataAction);
+        const captorValuesState = stateMachine.createState( "Captor values state", false, this.parseDataAction);
         
         const parseDataState = stateMachine.createState( "Parse data state", false, this.statementAction);
         
@@ -137,12 +146,14 @@ export class FSM {
         toLocalState.addTransition( "buildings", buildingsState );
         toLocalState.addTransition( "rooms", roomsState );
         toLocalState.addTransition( "captors", captorsState );
+        toLocalState.addTransition( "captor_values", captorValuesState );
 
         toCloudState.addTransition( "users", usersState );
         toCloudState.addTransition( "devices", devicesState );
         toCloudState.addTransition( "buildings", buildingsState );
         toCloudState.addTransition( "rooms", roomsState );
         toCloudState.addTransition( "captors", captorsState );
+        toCloudState.addTransition( "captor_values", captorValuesState );
         
         //PARSE DATA
         usersState.addTransition( "parse", parseDataState );
@@ -150,6 +161,7 @@ export class FSM {
         buildingsState.addTransition( "parse", parseDataState );
         roomsState.addTransition( "parse", parseDataState );
         captorsState.addTransition( "parse", parseDataState );
+        captorValuesState.addTransition( "parse", parseDataState );
 
         //FIND STATEMENT
         parseDataState.addTransition( "get", getState );

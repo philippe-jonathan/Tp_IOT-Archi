@@ -38,7 +38,6 @@ module.exports = {
     {
         let data = {
             'captor_id' : captorid,
-            'client_id' : process.env.CLIENT_ID,
             'value': value
         };
         // Send to redis DB
