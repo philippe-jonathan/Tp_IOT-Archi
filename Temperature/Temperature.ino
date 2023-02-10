@@ -71,6 +71,7 @@ void SM_s1_bluetooth() {
           }
           Serial.println(ssid);  
           state_wifi=4;
+          clearvars SerialBT;
         }
         break;
       }      
