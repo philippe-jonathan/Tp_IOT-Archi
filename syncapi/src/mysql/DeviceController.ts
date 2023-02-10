@@ -1,21 +1,19 @@
 import mysql, { Pool } from "mysql2";
 import { Controller } from "./Controller";
 
+let pool =  mysql.createPool({
+  host: 'dbcloud',
+  user: 'root',
+  password: 'password',
+  database: 'AirLuxDB',
+  connectionLimit: 10,
+});
+
 export class DeviceController implements Controller
 {
-  pool: Pool;
-  constructor(){
-    // create the connection to database
-    this.pool = mysql.createPool({
-      host: 'dbcloud',
-      user: 'root',
-      password: 'password',
-      database: 'AirLuxDB'
-    });
-  }
   // Function to select data from the devices table
   select() {
-    this.pool.getConnection(function(err, connection) {
+    pool.getConnection(function(err, connection) {
       if (err) throw err; // not connected!
       // Use the connection
   
@@ -36,7 +34,7 @@ export class DeviceController implements Controller
       console.error('Invalid input. id is a required field.');
       return;
     }
-    this.pool.getConnection(function(err, connection) {
+    pool.getConnection(function(err, connection) {
       if (err) throw err; // not connected!
       // Use the connection
   
@@ -62,7 +60,7 @@ if (!parsedData.id || !parsedData.apns_token) {
   console.error('Invalid input. id, and apns_token are required fields.');
   return;
 }
-this.pool.getConnection(function(err, connection) {
+pool.getConnection(function(err, connection) {
   if (err) { console.log(err); return; };// not connected!
   // Use the connection
 
@@ -81,7 +79,7 @@ connection.release();
 // Function to update data in the devices table
 update(json: string) {
   let parsedData = JSON.parse(json);
-    this.pool.getConnection(function(err, connection) {
+    pool.getConnection(function(err, connection) {
       if (err) throw err; // not connected!
       // Use the connection
   
@@ -109,7 +107,7 @@ remove(id: string) {
     console.error('Invalid input. id is a required field.');
     return;
   }
-  this.pool.getConnection(function(err, connection) {
+  pool.getConnection(function(err, connection) {
     if (err) throw err; // not connected!
     // Use the connection
 

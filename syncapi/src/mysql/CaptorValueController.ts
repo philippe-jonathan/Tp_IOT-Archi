@@ -1,23 +1,19 @@
 import mysql, { Pool } from "mysql2";
 import { Controller } from "./Controller";
 
+let pool =  mysql.createPool({
+  host: 'dbcloud',
+  user: 'root',
+  password: 'password',
+  database: 'AirLuxDB',
+  connectionLimit: 10,
+});
+
 export class CaptorValueController implements Controller
 {
-  pool: Pool;
-  constructor(){
-    // create the connection to database
-    this.pool = mysql.createPool({
-      host: 'dbcloud',
-      user: 'root',
-      password: 'password',
-      database: 'AirLuxDB',
-      connectionLimit: 10,
-    });
-  }
-
   // Function to select data from the buildings table
   select() {
-    this.pool.getConnection(function(err, connection) {
+    pool.getConnection(function(err, connection) {
       if (err) throw err; // not connected!
       // Use the connection
   
@@ -43,7 +39,7 @@ export class CaptorValueController implements Controller
       console.error('Invalid input. id is a required field.');
       return;
     }
-    this.pool.getConnection(function(err, connection) {
+    pool.getConnection(function(err, connection) {
       if (err) throw err; // not connected!
       try {
         // SQL query using prepared statement
@@ -75,38 +71,35 @@ async insert(json: string) {
     return;
   }
   console.log('captor_id = ' + parsedData.captor_id + ', value = ' + parsedData.value + ' are required fields.');
-  this.pool.getConnection(async function(err, connection) {
-    if (err) { console.log(err); return; };// not connected!
-    // Use the connection
-    try {
-      // SQL query using prepared statement
-      let sql = 'INSERT INTO captor_values (captor_id, value) VALUES (?, ?)';
-      let data = [parsedData.captor_id, parsedData.value];
-    
-      let caca = await connection.execute(sql, data, function(err, result) {
-        if (err) console.log(err);
-        else console.log('Captor value added successfully');
-      });
-    }
+  
+      pool.getConnection(async function(err, connection) {
+        if (err) { console.log(err); return; };// not connected!
+        // Use the connection
+        try {
+          // SQL query using prepared statement
+          let sql = 'INSERT INTO captor_values (captor_id, value) VALUES (?, ?)';
+          let data = [parsedData.captor_id, parsedData.value];
         
-    catch (error) {
-      console.log(error);
-    }
-    finally{
-      connection.release();
-    }
-  })
-  // close all connections
-  this.pool.end(function (err) {
-    // all connections in the pool cluster have ended
-      console.log('__ Pool end');
-  });
+          let caca = await connection.execute(sql, data, function(err, result) {
+            if (err) console.log(err);
+            else console.log('Captor value added successfully');
+          });
+        }
+            
+        catch (error) {
+          console.log(error);
+        }
+        finally{
+          connection.release();
+        }
+      })
+    
   }
 
   // Function to update data in the captor_values table
   update(json: string) {
     let parsedData = JSON.parse(json);
-    this.pool.getConnection(function(err, connection) {
+    pool.getConnection(function(err, connection) {
       if (err) throw err; // not connected!
       // Use the connection
       try{
@@ -130,7 +123,6 @@ async insert(json: string) {
       }
       finally{
         connection.release();
-        connection.end();
       }
     })
   }
@@ -142,7 +134,7 @@ async insert(json: string) {
       console.error('Invalid input. id is a required field.');
       return;
     }
-    this.pool.getConnection(function(err, connection) {
+    pool.getConnection(function(err, connection) {
       if (err) throw err; // not connected!
       // Use the connection
       try{

@@ -1,23 +1,20 @@
 import mysql, { Pool } from "mysql2";
 import { Controller } from "./Controller";
 
+let pool =  mysql.createPool({
+  host: 'dbcloud',
+  user: 'root',
+  password: 'password',
+  database: 'AirLuxDB',
+  connectionLimit: 10,
+});
+
 export class UserController implements Controller
 {
 // @ device_id field missing
-  pool: Pool;
-  constructor(){
-    // create the connection to database
-    this.pool = mysql.createPool({
-      host: 'dbcloud',
-      user: 'root',
-      password: 'password',
-      database: 'AirLuxDB'
-    });
-  }
-
   // Function to select data from the users table
   select() {
-    this.pool.getConnection(function(err, connection) {
+    pool.getConnection(function(err, connection) {
       if (err) throw err; // not connected!
       // Use the connection
 
@@ -38,7 +35,7 @@ export class UserController implements Controller
       console.error('Invalid input. id is a required field.');
       return;
     }
-    this.pool.getConnection(function(err, connection) {
+    pool.getConnection(function(err, connection) {
       if (err) throw err; // not connected!
       // Use the connection
   
@@ -64,7 +61,7 @@ export class UserController implements Controller
     console.error('Invalid input. id, name, email and password are required fields.');
     return;
   }
-  this.pool.getConnection(function(err, connection) {
+  pool.getConnection(function(err, connection) {
     if (err) { console.log(err); return; };// not connected!
     // Use the connection
 
@@ -83,7 +80,7 @@ export class UserController implements Controller
   // Function to update data in the users table
   update(json: string) {
     let parsedData = JSON.parse(json);
-    this.pool.getConnection(function(err, connection) {
+    pool.getConnection(function(err, connection) {
       if (err) throw err; // not connected!
       // Use the connection
   
@@ -111,7 +108,7 @@ export class UserController implements Controller
         console.error('Invalid input. id is a required field.');
         return;
       }
-      this.pool.getConnection(function(err, connection) {
+      pool.getConnection(function(err, connection) {
         if (err) throw err; // not connected!
         // Use the connection
 
