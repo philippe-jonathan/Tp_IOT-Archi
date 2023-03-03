@@ -1,5 +1,5 @@
 import 'package:airlux/screens/home_screen.dart';
-import 'package:airlux/screens/signup_screen.dart';
+import 'package:airlux/screens/login_and_signup/signup_screen.dart';
 import 'package:airlux/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
 

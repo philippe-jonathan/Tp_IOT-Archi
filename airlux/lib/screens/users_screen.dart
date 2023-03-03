@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class BleDevices extends StatelessWidget {
-  const BleDevices({super.key});
+class UsersScreen extends StatelessWidget {
+  const UsersScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class BleDevices extends StatelessWidget {
             children: [
               // Bonjour
               Text(
-                'Listes des appareils bleutooth !',
+                'Listes des utilisateurs !',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ],

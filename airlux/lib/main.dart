@@ -1,5 +1,5 @@
+import 'package:airlux/screens/login_and_signup/login_screen.dart';
 import 'package:flutter/material.dart';
-import 'screens/login_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -8,47 +8,49 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  // This widget is the root our your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo Lint',
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
-        textTheme: const TextTheme(
-          titleLarge: TextStyle(fontSize: 36.0, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
-          titleMedium: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-          bodyMedium: TextStyle(fontSize: 16.0),
-          bodySmall: TextStyle(fontSize: 14.0),
-        ),
-        // appBarTheme: AppBarTheme(
-        //   bo
-        // ),
-        inputDecorationTheme: const InputDecorationTheme(
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.black),
-            borderRadius: BorderRadius.all(Radius.circular(100)),
+          primarySwatch: Colors.deepPurple,
+          textTheme: const TextTheme(
+            titleLarge: TextStyle(
+                fontSize: 36.0,
+                fontWeight: FontWeight.bold,
+                fontStyle: FontStyle.italic),
+            titleMedium: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+            bodyMedium: TextStyle(fontSize: 16.0),
+            bodySmall: TextStyle(fontSize: 14.0),
           ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.deepPurple),
-          ),
-          filled: true,
-          hintStyle: TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal),
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            foregroundColor: Colors.white,
-            textStyle: const TextStyle(fontSize: 20),
-            backgroundColor: Colors.deepPurple,
-            shape: const StadiumBorder(),
+          // appBarTheme: AppBarTheme(
+          //   bo
+          // ),
+          inputDecorationTheme: const InputDecorationTheme(
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.black),
+              borderRadius: BorderRadius.all(Radius.circular(100)),
             ),
-        ),
-        textButtonTheme: TextButtonThemeData(
-          style: TextButton.styleFrom(
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.deepPurple),
+            ),
+            filled: true,
+            hintStyle: TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal),
+          ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.white,
+              textStyle: const TextStyle(fontSize: 20),
+              backgroundColor: Colors.deepPurple,
+              shape: const StadiumBorder(),
+            ),
+          ),
+          textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
             foregroundColor: Colors.deepPurple,
             textStyle: Theme.of(context).textTheme.bodySmall,
-          ))
-      ),
+          ))),
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
       home: LoginScreen(),
     );

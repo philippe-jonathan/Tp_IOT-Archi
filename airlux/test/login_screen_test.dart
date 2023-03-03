@@ -1,7 +1,7 @@
 // import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:airlux/screens/login_screen.dart';
+import 'package:airlux/screens/login_and_signup/login_screen.dart';
 
 void main() {
   testWidgets('LoginScreen tests', (WidgetTester tester) async {
