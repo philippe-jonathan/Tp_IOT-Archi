@@ -17,4 +17,4 @@ jobs:
       #   run: flutter analyze
 
       - name: Run tests
-        run: flutter test
+        run: cd airlux/ && flutter test
