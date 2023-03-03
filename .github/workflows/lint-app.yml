@@ -1,7 +1,7 @@
 name: Lint Flutter
 
 on:
-  pull_request:
+  push:
     branches: [ "App" ]
 
 jobs:
