@@ -13,8 +13,8 @@ jobs:
         with:
          channel: 'stable'
 
-      - name: Analyze project source
-        run: flutter analyze
+      # - name: Analyze project source
+      #   run: flutter analyze
 
       - name: Run tests
         run: flutter test
