@@ -21,7 +21,7 @@ class LoginScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Bonjour
+              // Texte de bienvenue
               Text(
                 'Connectez vous !',
                 style: Theme.of(context).textTheme.titleMedium,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CustomTextfield extends StatelessWidget {
+  // Our settings
   final dynamic controller;
   final String hintText;
   final bool obscureText;
