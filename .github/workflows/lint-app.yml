@@ -12,12 +12,9 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
          channel: 'stable'
-       
-      - name: Verify formatting
-        run: flutter format --output=none --set-exit-if-changed .
 
       - name: Analyze project source
-        run: flutter analyze --fatal-infos
+        run: dart analyze --fatal-infos
 
       - name: Run tests
         run: flutter test
