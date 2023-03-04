@@ -15,7 +15,7 @@ class _BleDevicesState extends State<BleDevices> {
   List<DiscoveredDevice> devices = [];
   List<String> deviceName = [];
   bool isConnected = false;
-  var subscription;
+  dynamic subscription;
   bool buttonEnabled = true;
 
   // Functions
@@ -25,7 +25,7 @@ class _BleDevicesState extends State<BleDevices> {
     });
     devices.clear();
     deviceName.clear();
-    print("Scanning ...");
+    // print("Scanning ...");
     Timer(const Duration(seconds: 4), () {
       stopScan();
     });
@@ -34,7 +34,7 @@ class _BleDevicesState extends State<BleDevices> {
       // Scan for handling results
       if (device.name.isNotEmpty && !deviceName.contains(device.name)) {
         setState(() {
-          print(device);
+          // print(device);
           deviceName.add(device.name);
           devices.add(device);
         });
@@ -45,7 +45,7 @@ class _BleDevicesState extends State<BleDevices> {
   void stopScan() {
     subscription?.cancel();
     subscription = null;
-    print('Scan stoped after 4 seconds');
+    // print('Scan stoped after 4 seconds');
     setState(() {
       buttonEnabled = true;
     });
