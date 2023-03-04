@@ -1,27 +1,94 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
-class BleDevices extends StatelessWidget {
+class BleDevices extends StatefulWidget {
   const BleDevices({super.key});
+
+  @override
+  State<BleDevices> createState() => _BleDevicesState();
+}
+
+class _BleDevicesState extends State<BleDevices> {
+  // Variables
+  final flutterReactiveBle = FlutterReactiveBle();
+  List<DiscoveredDevice> devices = [];
+  List<String> deviceName = [];
+  bool isConnected = false;
+  var subscription;
+  bool buttonEnabled = true;
+
+  // Functions
+  void startScan() {
+    setState(() {
+      buttonEnabled = false;
+    });
+    devices.clear();
+    deviceName.clear();
+    print("Scanning ...");
+    Timer(const Duration(seconds: 4), () {
+      stopScan();
+    });
+    subscription = flutterReactiveBle.scanForDevices(
+        scanMode: ScanMode.lowLatency, withServices: []).listen((device) {
+      // Scan for handling results
+      if (device.name.isNotEmpty && !deviceName.contains(device.name)) {
+        setState(() {
+          print(device);
+          deviceName.add(device.name);
+          devices.add(device);
+        });
+      }
+    }, onError: (Object error) {});
+  }
+
+  void stopScan() {
+    subscription?.cancel();
+    subscription = null;
+    print('Scan stoped after 4 seconds');
+    setState(() {
+      buttonEnabled = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('AirLux'),
-      ),
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Bonjour
-              Text(
-                'Listes des appareils bleutooth !',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            ],
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            // onPressed: () {
+            //   startScan();
+            // },
+            onPressed: () {
+              if (buttonEnabled) {
+                startScan();
+              }
+              Null;
+            },
           ),
-        ),
+        ],
+      ),
+      body: ListView.builder(
+        itemCount: devices.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text('${devices[index].name} | ${devices[index].rssi}'),
+            trailing: ElevatedButton(
+                onPressed: () {
+                  if (isConnected == false) {
+                    // connect(devices[index]);
+                  } else {
+                    // disconnect(devices[index]);
+                  }
+                },
+                child: isConnected == false
+                    ? const Text('Connecter')
+                    : const Text('Déconnecter')),
+          );
+        },
       ),
     );
   }
