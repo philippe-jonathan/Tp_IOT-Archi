@@ -10,9 +10,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Install Arduino IDE
-        uses: arduino/setup-arduino@v1
+        uses: aibar/arduino-ide-setup@v1
         with:
-          arduino-version: '1.8.16'
+          ide-version: '1.8.16'
+          fqbn: 'arduino:avr:uno'
       - name: Install library dependencies
         run: |
           arduino-cli lib install "ArduinoUnit"
