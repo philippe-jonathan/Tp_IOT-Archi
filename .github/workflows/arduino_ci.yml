@@ -7,7 +7,7 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Install Arduino IDE
-      uses: arduino/arduino-ide@main
+      uses: arduino/arduino-ide@master
       with:
         ide_path: arduino-ide # optional: relative to $HOME or absolute. default: $HOME/arduino-ide
         usr_path: Arduino # optional: relative to $HOME or absolute. default: $HOME/Arduino
