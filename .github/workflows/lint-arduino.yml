@@ -7,8 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          path: 'Temperature/sketch_feb10a/'
       - uses: arduino/arduino-lint-action@v1
         with:
-          path: 'Temperature/sketch_feb10a/'
+          path: './Temperature/sketch_feb10a'
