@@ -2,21 +2,11 @@
 name: Arduino CI
 on: [push, pull_request]
 jobs:
-  build:
+  arduino_ci:
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@master
-    - name: Install Arduino IDE
-      uses: arduino/arduino-ide@master
-      with:
-        ide_path: arduino-ide # optional: relative to $HOME or absolute. default: $HOME/arduino-ide
-        usr_path: Arduino # optional: relative to $HOME or absolute. default: $HOME/Arduino
-    - name: Install library dependencies
-      run: |
-        arduino-cli lib install "ArduinoUnit"
-    - name: Compile code and run tests
-      run: |
-        arduino-cli compile --fqbn arduino:avr:uno .
-        arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:avr:uno .
-        arduino-cli serial monitor -p /dev/ttyACM0 --baud 9600
-        arduino-cli board details --fqbn arduino:avr:uno
+      - uses: actions/checkout@v3
+      - uses: Arduino-CI/action@stable-1.x
+        with:
+          path: './tests/ESP32' 
