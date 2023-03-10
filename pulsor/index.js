@@ -1,4 +1,5 @@
 const mqtt = require("mqtt");
+
 const crypto = require('crypto');
 var client = mqtt.connect('mqtt://broker');
 

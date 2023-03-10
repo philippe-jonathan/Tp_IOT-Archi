@@ -10,7 +10,6 @@ update-rc.d mysql defaults
 ufw allow 3306
 service mysql start
 
-
 mysql -uroot -e "
 CREATE SCHEMA AirLuxDB character set utf8mb4 collate utf8mb4_bin; 
 CREATE TABLE AirLuxDB.users (
@@ -64,3 +63,4 @@ CREATE TABLE AirLuxDB.devices (
     UNIQUE INDEX id_UNIQUE (id ASC));
 CREATE USER 'root'@'syncapi.docker_iotnetwork' IDENTIFIED BY 'password'; GRANT ALL PRIVILEGES ON *.* TO 'root'@'syncapi.docker_iotnetwork' WITH GRANT OPTION; 
 CREATE USER 'root'@'%' IDENTIFIED BY 'password'; GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;"
+
