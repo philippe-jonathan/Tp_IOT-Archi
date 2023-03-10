@@ -5,6 +5,7 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    run: cd Temperature/sketch_feb10a/
     steps:
       - uses: actions/checkout@v3
       - uses: arduino/arduino-lint-action@v1
