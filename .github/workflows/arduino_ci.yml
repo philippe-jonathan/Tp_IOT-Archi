@@ -8,5 +8,5 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: Arduino-CI/action@stable-1.x
-        with:
-          path: './tests/ESP32' 
+        env: 
+          USE_SUBDIR: './tests/ESP32' 
