@@ -9,5 +9,4 @@ jobs:
       - uses: actions/checkout@v3
       - uses: arduino/arduino-lint-action@v1
         with:
-          path: './Temperature/sketch_feb10a'
-
+          path: './sketch_feb10a'
