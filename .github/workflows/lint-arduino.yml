@@ -1,0 +1,10 @@
+name: Lint Arduino
+on: 
+  push:
+    branches: [ "temperature" ]
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: arduino/arduino-lint-action@v1
