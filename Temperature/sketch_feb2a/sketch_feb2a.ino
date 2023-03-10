@@ -97,5 +97,4 @@ void loop() {
                     
   }  //SM_s1_bluetooth();
   // put your main code here, to run repeatedly:
-  delay(2000);
 }
