@@ -9,7 +9,7 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Install Arduino IDE
-      uses: arduino/arduino-ide@main
+      uses: hay-kot/arduino-ide-action@v1.0
     - name: Install library dependencies
       run: |
         arduino-cli lib install "ArduinoUnit"
