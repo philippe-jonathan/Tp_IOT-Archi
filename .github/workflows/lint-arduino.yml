@@ -1,7 +1,5 @@
 name: Lint Arduino
-on: 
-  push:
-    branches: [ "temperature" ]
+on: [push, pull_request]
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -9,4 +7,4 @@ jobs:
       - uses: actions/checkout@v3
       - uses: arduino/arduino-lint-action@v1
         with:
-          path: './sketch_feb10a'
+          path: './ESP32/sketch_feb10a'
