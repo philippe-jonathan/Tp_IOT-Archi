@@ -1,16 +1,18 @@
 FROM node:18
 
-
-COPY /syncapi/package*.json ./
-
 RUN mkdir -p /home/syncapi
 WORKDIR /home/syncapi/
-
-RUN npm install --silent
 
 # Bundle app source
 COPY /syncapi/. .
 
+
+RUN npm install --silent \
+  && npm update \
+#  && npx tsc --init \
+  && npx tsc
+
+
 EXPOSE 6001
 
-CMD [ "node", "index.js" ]
+CMD [ "node", "/home/syncapi/build/index.js" ]
