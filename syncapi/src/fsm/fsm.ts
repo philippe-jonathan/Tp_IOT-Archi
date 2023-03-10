@@ -1,3 +1,4 @@
+
 import { UserController } from "../mysql/UserController";
 import { DeviceController } from "../mysql/DeviceController";
 import { BuildingController } from "../mysql/BuildingController";
@@ -20,6 +21,8 @@ class Context{
     captors: CaptorController;
     captorValues: CaptorValueController;
 
+    done: boolean;
+
     constructor(actions: string[]) {
         this.actions = actions;
         this.users = new UserController();
@@ -28,6 +31,7 @@ class Context{
         this.rooms = new RoomController();
         this.captors = new CaptorController();
         this.captorValues = new CaptorValueController();
+        this.done = false;
         console.log(`Controllers : constructor, users = ${this.users}, devices = ${this.devices}`);
     };
 }
@@ -107,12 +111,13 @@ export class FSM {
         // Can perform some final actions, the state machine is finished running.
         //perform mysql request and/or send message to local
         console.log(`FSM : final action`);
+        context.done = true;
         context.currentController = undefined;
         context.data = undefined;
         
     };
       
-    startFsm() {
+    startFsm() : boolean {
         console.log(`FSM : startFsm : context = ${this.context}`);
         const stateMachine = new StateMachine('StateMachine', this.context);
         
@@ -174,5 +179,7 @@ export class FSM {
         
         // Start the state machine
         stateMachine.start( directionState );
+
+        return true;
     }
 }
