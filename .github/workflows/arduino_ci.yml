@@ -10,7 +10,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Install Arduino IDE
-        uses: per1234/setup-arduino@v1
+        uses: arduino/setup-arduino@v1
         with:
           arduino-version: '1.8.16'
       - name: Install library dependencies
