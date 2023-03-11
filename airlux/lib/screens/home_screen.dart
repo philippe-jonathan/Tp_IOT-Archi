@@ -1,3 +1,4 @@
+import 'package:airlux/screens/automations_screen.dart';
 import 'package:airlux/screens/ble_devices_screen.dart';
 import 'package:airlux/screens/palces_screen.dart';
 import 'package:airlux/screens/users_screen.dart';
@@ -33,6 +34,8 @@ class HomeScreen extends StatelessWidget {
                       value: 2,
                       child: Text("Utillisateurs"),
                     ),
+                    const PopupMenuItem(
+                        value: 3, child: Text("Automatisations"))
                   ];
                 },
                 onSelected: (value) {
@@ -53,6 +56,12 @@ class HomeScreen extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                           builder: (context) => const UsersScreen()),
+                    );
+                  } else if (value == 3) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AutomationsScreen()),
                     );
                   }
                 })
