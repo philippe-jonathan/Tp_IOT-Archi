@@ -7,7 +7,7 @@ class AutomationsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('AirLux'),
+        title: const Text('Automatisations'),
       ),
       body: SafeArea(
         child: Center(

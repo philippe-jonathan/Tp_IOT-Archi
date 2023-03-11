@@ -15,7 +15,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text('AirLux'),
+          title: const Text('Accueil'),
           automaticallyImplyLeading: false,
           actions: <Widget>[
             PopupMenuButton(

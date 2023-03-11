@@ -55,7 +55,7 @@ class _BleDevicesState extends State<BleDevices> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('AirLux'),
+        title: const Text('Appareils'),
         actions: [
           IconButton(
             icon: const Icon(Icons.search),

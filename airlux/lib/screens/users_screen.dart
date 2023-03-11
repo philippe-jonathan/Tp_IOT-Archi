@@ -7,7 +7,7 @@ class UsersScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('AirLux'),
+        title: const Text('Utilisateurs'),
       ),
       body: SafeArea(
         child: Center(

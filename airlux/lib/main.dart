@@ -24,9 +24,13 @@ class MyApp extends StatelessWidget {
             bodyMedium: TextStyle(fontSize: 16.0),
             bodySmall: TextStyle(fontSize: 14.0),
           ),
-          // appBarTheme: AppBarTheme(
-          //   bo
-          // ),
+          iconTheme: const IconThemeData(color: Colors.deepPurple),
+          appBarTheme: AppBarTheme(
+              titleTextStyle: Theme.of(context).textTheme.titleLarge,
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              actionsIconTheme: const IconThemeData(color: Colors.deepPurple),
+              iconTheme: const IconThemeData(color: Colors.deepPurple)),
           inputDecorationTheme: const InputDecorationTheme(
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(color: Colors.black),
