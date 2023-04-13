@@ -7,6 +7,7 @@ View documentation and all information in notion : https://hallowed-timimus-dfc.
 # clone repo (uwu)
 cd docker
 docker compose build
+docker compose up
 
 #__________________MOSQUITTO____________________
 # START MOSQUITTO BROKER :
