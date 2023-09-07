@@ -24,7 +24,9 @@ wss.on('connection', (ws) => {
         fsm.startFsm(); 
     });
 
-    ws.send('Welcome to the server!');
+    //ws.send('home/captor_values/0000001/action');
+    console.log(`SENS WS MESSAGE : 'tolocal//captor_values//0000003//1'`);
+    ws.send('tolocal//captor_values//0000003//1');
 });
 
 // let id = 9445166;

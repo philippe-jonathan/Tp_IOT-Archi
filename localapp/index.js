@@ -4,6 +4,29 @@ const mqttSub = require("./mqtt/sub");
 const mqttPub = require("./mqtt/pub");
 
 
+function parseFromCloud(message){
+    let parsed = message.split("//");
+    if(parsed[0] != "tolocal") return;
+    if(parsed[1] != "captor_values") return;
+  
+    let data = parsed[2];
+  
+    let captorId =  parsed[2];
+    let value =  parsed[3];
+
+    //redis.postCaptorValue(captorId, value);
+
+    mqttPub.publish("home/captor_values/" + captorId + "/action", value);
+    console.log('MQTT PUBLISH : ', "home/captor_values/" + captorId + "/action");
+  }
+
+  
+  ws.client.on('message', function message(data) {
+    console.log('Web socket MESSAGE RECEIVED : ', data);
+    parseFromCloud(data);
+  });
+
+
 mqttSub.on('message', function(topic, message){
     console.log("MQTT MESSAGE RECEIVED : " + message.toString());
 
